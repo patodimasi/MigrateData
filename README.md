@@ -18,3 +18,8 @@ Producto, Producto_FamiliaProducto, Producto_TipoProducto, Producto_Imagen,Produ
 Tablas que tiene que quedar en MYSQL (minuscula de Strapi):
 productos, producto_familia_productos, producto_tipo_productos,  producto_imagenes,producto_descripcions, producto_circulados, producto_aignados, producto_edicions, pedidos, pedidos_estados, documentos, documento_tipo_documento
 
+Tablas con script para crear en mysql: producto_circulado, producto_descripcions, producto_asignado, devolucion_productos_fuera_rediafs, reposicions, documentos (recordar que cambia el nombre por documento_facturas).
+
+Recordatorios: Recordar al momento de la migracion, luego, borrar el campo id_producto_circulado de la tabla Producto_Edicion y Documento_Factura, este campo se dejo, para
+poder vincular las tablas y realizar el join, entre Producto_Edicion y Pedidos , Producto_Edicion y Documento.
+
