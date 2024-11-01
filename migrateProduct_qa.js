@@ -4,9 +4,9 @@ const readline = require('readline');
 
 /*
 Script para la entidad Producto tiene las tabla:
-Producto, Producto_FamiliaProducto,Producto_Descripcion,Producto_TipoProducto
-Producto_Circulado,APP_ProductosImagenes, Devolucion_ProductosFueraRediaf,Producto_Asignado,Reposicion,
-Reposicion_EstadoReposicion,ProductoAsignado,
+Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Asignado
+Producto_Circulado, APP_ProductosImagenes, Devolucion_ProductosFueraRediaf, Reposicion,
+Reposicion_EstadoReposicion, Documentos,Documentos_Tipo_Documento
 */
 
 const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_qa.sql');
@@ -19,7 +19,8 @@ function convertToSnakeCase(str) {
 
 function renameIdColumns(columns, tableName) {
    
-    if ((tableName === 'Producto') || (tableName === 'Devolucion_ProductosFueraRediaf')  ) {
+    if ((tableName === 'Producto') || (tableName === 'Devolucion_ProductosFueraRediaf') 
+    || (tableName === 'Documentos') || (tableName === 'Documentos_TipoDocumento') ) {
         return columns; 
     }
     return columns.map((col, index) => {
@@ -54,6 +55,7 @@ const strategies = {
        
         const fechaLimite = new Date('2024-01-01');
 
+     
         // Comparar fechas
         if (createdAt > fechaLimite) {
             
@@ -104,6 +106,8 @@ const tableStrategies = {
     'producto_asignados': strategies.dateFilterInsert,
     'reposicions': strategies.dateFilterInsert,
     'app_productos_imagenes': strategies.imageInsert,
+    'documentos_tipo_documentos': strategies.insert,
+    'documentos': strategies.dateFilterInsert,
     'productos': strategies.productInsert
     
 };
@@ -146,10 +150,11 @@ rl.on('line', (line) => {
         const strategy = tableStrategies[snakeTableName];
         
         if (snakeTableName === 'producto_descripcions' || snakeTableName === 'producto_circulados' || 
-           snakeTableName === 'producto_asignados' || snakeTableName === 'reposicions') 
+           snakeTableName === 'producto_asignados' || snakeTableName === 'reposicions' 
+           || snakeTableName === 'documentos') 
         { 
             
-            const createdAtIndex = snakeColumns.findIndex(col => col.trim() === 'created_a');
+            const createdAtIndex = snakeColumns.findIndex(col => col.trim() === 'created_a' || col.trim() === 'fecha_documento');
             if (createdAtIndex !== -1 && createdAtIndex < values.length) {
               
                 strategy(snakeTableName, snakeColumns, values, createdAtIndex);
@@ -186,8 +191,8 @@ rl.on('close', () => {
         )
     SELECT  
         pe.id, pa.id_medio_de_entrega,pa.cantidad_teorica, pa.cantidad_real,'Proceso Migrado',    
-         pa.created_a, '', NULL, pa.precio_unidad,pa.fecha_tope_devolucion, pa.id_carga,
-         pa.fecha_vencimiento_factura,  pa.cantidad_suscripcion,pa.id_clase_entrega,NULL,NULL,NULL,NULL,NULL
+        pa.created_a, '', NULL, pa.precio_unidad,pa.fecha_tope_devolucion, pa.id_carga,
+        pa.fecha_vencimiento_factura,  pa.cantidad_suscripcion,pa.id_clase_entrega,NULL,NULL,NULL,NULL,NULL
         
     FROM 
         producto_edicions pe
@@ -209,7 +214,17 @@ rl.on('close', () => {
     FROM producto_asignados  pa
     JOIN reposicions r ON pa.id = r.id_producto_asignado_resultante
     JOIN producto_edicions  pe ON pa.id_producto_circulado = pe.id_producto_circulado
-    WHERE  pa.id_clase_entrega = 'REP'
+    WHERE  pa.id_clase_entrega = 'REP';
+
+    INSERT INTO documento_facturas(id_documento,id_posicion,id_tipo_documento,id_documento_origen,fecha_documento,referencia_documento,
+        id_clase_documento_origen,id_agente_pagador,id_agente,cantidad, precio, fecha_tope_de_devolucion,
+        procesado, fecha_vencimiento_factura,nro_pedido_sap,id_producto_circulado,id_producto_edicion)
+    SELECT d.id_documento,d.id_posicion,d.id_tipo_documento,d.id_documento_origen,d.fecha_documento,d.referencia_documento,
+    d.id_clase_documento_origen,d.id_medio_de_entrega_pagador,d.id_medio_de_entrega,d.cantidad,d.precio, d.fecha_tope_de_devolucion,
+    d.procesado,d.fecha_vencimiento_factura,d.nro_pedido_sap,d.id_producto_circulado, pe.id
+
+    FROM producto_edicions pe      
+    JOIN documentos d ON d.id_producto_circulado = pe.id_producto_circulado;	
 
 `;
 
