@@ -3,11 +3,12 @@ El archivo migrateProduct_qa, abarca las siguientes tablas:
 Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Circulado
 APP_ProductosImagenes, Devolucion_ProductosFueraRediaf, Producto_Asignado,Reposicion, Reposicion_EstadoReposicion, ProductoAsignado, Documentos, Documentos_TipoDocumento
 
-Se crean las siguientes tablas:  
+*Se crean las siguientes tablas:  
 Producto_Edicion : Viene de la union de las tablas Producto_Descripcion y Producto_Circulado.  
 Pedidos: Viene de la union de las tablas Producto_Asignado, Reposicion y Producto_Edicion.
+Documento_Factura: Viene de la union de Documento y Producto_Edicion.  
 
-Se cambiaron los nombres de las siguientes tablas:
+Se cambiaron los nombres de las siguientes tablas:  
 APP_ProductosImagenes paso a llamarse Producto_Imagen
 Reposicion_EstadoReposicion paso a llamarse Pedido_Estado
 Documentos paso a llamarse Documento_Factura
