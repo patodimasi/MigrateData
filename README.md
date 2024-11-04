@@ -8,9 +8,9 @@ Producto_Edicion : Viene de la union de las tablas Producto_Descripcion y Produc
 Pedidos: Viene de la union de las tablas Producto_Asignado, Reposicion y Producto_Edicion.  
 Documento_Factura: Viene de la union de Documento y Producto_Edicion.  
 
-Se cambiaron los nombres de las siguientes tablas:  
-APP_ProductosImagenes paso a llamarse Producto_Imagen
-Reposicion_EstadoReposicion paso a llamarse Pedido_Estado
+*Se cambiaron los nombres de las siguientes tablas:  
+APP_ProductosImagenes paso a llamarse Producto_Imagen  
+Reposicion_EstadoReposicion paso a llamarse Pedido_Estado  
 Documentos paso a llamarse Documento_Factura
 
 Tablas que tienen que quedar en Strapi:
