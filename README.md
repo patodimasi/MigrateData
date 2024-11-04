@@ -21,5 +21,5 @@ productos, producto_familia_productos, producto_tipo_productos,  producto_imagen
 
 *Tablas para crear en mysql (no van a estar en Strapi): producto_circulado, producto_descripcions, producto_asignado, devolucion_productos_fuera_rediafs, reposicions, documentos (recordar que cambia el nombre por documento_facturas).
 
-*Recordatorios: Recordar despues de la migracion de datos, borrar el campo id_producto_circulado de la tabla Producto_Edicion y en la tabla Documento_Factura, este campo se dejo, para poder vincular las tablas y realizar el join, entre (Producto_Edicion y Pedidos) , (Producto_Edicion y Documento).
+*Recordatorios: Recordar despues de la migracion de datos, borrar el campo id_producto_circulado de la tabla Producto_Edicion y en la tabla Documento_Factura, este campo se dejo, para poder vincular las tablas y realizar el join, entre (Producto_Edicion y Pedidos) , (Producto_Edicion y Documento).  
 La base de datos mySql, se configuro con "innodb_autoinc_lock_mode=0"
