@@ -1,4 +1,4 @@
-Script para la migracion de datos.
+*Script para la migracion de datos:  
 El archivo migrateProduct_qa, abarca las siguientes tablas: 
 Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Circulado
 APP_ProductosImagenes, Devolucion_ProductosFueraRediaf, Producto_Asignado,Reposicion, Reposicion_EstadoReposicion, ProductoAsignado, Documentos, Documentos_TipoDocumento
