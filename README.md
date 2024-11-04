@@ -5,6 +5,7 @@ APP_ProductosImagenes, Devolucion_ProductosFueraRediaf, Producto_Asignado,Reposi
 
 Se crean las siguientes tablas: 
 Producto_Edicion : Viene de la union de las tablas Producto_Descripcion y Producto_Circulado.
+
 Pedidos: Viene de la union de las tablas Producto_Asignado, Reposicion y Producto_Edicion.
 
 Se cambiaron los nombres de las siguientes tablas:
