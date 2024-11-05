@@ -29,3 +29,7 @@ La base de datos mySql, se configuro con "innodb_autoinc_lock_mode=0"
 *Tablas que tienen que quedar en Strapi:  
 Devolucion, Devolucion_TipoDevolucion, Devolucion_EstadoDevolucion, Devolucion_EstadoLogistico, Devolucion_EstadoLinea
 
+*Tablas que tiene que quedar en MySQL (minuscula de Strapi):
+ devolucions, devolucion_estado_devolucions, devolucion_tipo_devolucions, devolucion_estado_logisticos, devolucion_estado_lineas 
+   
+
