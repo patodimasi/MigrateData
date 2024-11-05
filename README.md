@@ -1,4 +1,4 @@
-*Script para la migracion de datos:  
+<u>Script para la migracion de datos<u>:  
 
 **migrateProduct_qa**  
 El archivo migrateProduct_qa, abarca las siguientes tablas: 
