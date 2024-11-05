@@ -1,4 +1,5 @@
 *Script para la migracion de datos:  
+
 **migrateProduct_qa**  
 El archivo migrateProduct_qa, abarca las siguientes tablas: 
 Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Circulado
