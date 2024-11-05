@@ -24,7 +24,7 @@ productos, producto_familia_productos, producto_tipo_productos,  producto_imagen
 *Tablas para crear en mysql (no van a estar en Strapi): producto_circulado, producto_descripcions, producto_asignado, devolucion_productos_fuera_rediafs, reposicions, documentos (recordar que cambia el nombre por documento_facturas).
 
 *Recordatorios: Recordar despues de la migracion de datos, borrar el campo id_producto_circulado de la tabla Producto_Edicion y en la tabla Documento_Factura, este campo se dejo, para poder vincular las tablas y realizar el join, entre (Producto_Edicion y Pedidos) , (Producto_Edicion y Documento).  
-La base de datos mySql, se configuro con "innodb_autoinc_lock_mode=0"
+La base de datos mysql, se configuro con "innodb_autoinc_lock_mode=0"
 Las siguientes tablas conservaron el id de tipo varchar que tenian de SQL Server + el agregado del "id" PK propio de strapi: Producto, Devolucion_ProductosFueraRediaf, Documentos, Documentos_TipoDocumento.
 Las siguientes tablas se cambio el nombre de su PK por la PK "id" de strapi:  Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Asignado
 Producto_Circulado, APP_ProductosImagenes, Reposicion, Reposicion_EstadoReposicion
