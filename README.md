@@ -18,7 +18,7 @@ Documentos paso a llamarse Documento_Factura
 *Tablas que tienen que quedar en Strapi:
 Producto, Producto_FamiliaProducto, Producto_TipoProducto, Producto_Imagen, Producto_Edicion, Pedido, Pedido_Estado, Documento_Factura, Documento_TipoDocumento
 
-*Tablas que tiene que quedar en MYSQL (minuscula de Strapi):
+*Tablas que tiene que quedar en mysql (minuscula de Strapi):
 productos, producto_familia_productos, producto_tipo_productos,  producto_imagenes, producto_descripcions, producto_circulados, producto_aignados, producto_edicions, pedidos, pedidos_estados, documentos, documento_tipo_documento
 
 *Tablas para crear en mysql (no van a estar en Strapi): producto_circulado, producto_descripcions, producto_asignado, devolucion_productos_fuera_rediafs, reposicions, documentos (recordar que cambia el nombre por documento_facturas).
