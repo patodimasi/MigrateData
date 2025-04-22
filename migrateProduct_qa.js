@@ -9,7 +9,7 @@ Producto_Circulado, APP_ProductosImagenes, Devolucion_ProductosFueraRediaf, Repo
 Reposicion_EstadoReposicion, Documentos,Documentos_Tipo_Documento
 */
 
-const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_qa.sql');
+const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_producto.sql');
 const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifiedprod.sql');
 
 // paso todo a minuscula y guion _ 
@@ -24,7 +24,7 @@ function renameIdColumns(columns, tableName) {
         return columns; 
     }
     return columns.map((col, index) => {
-       // console.log("entra")
+       
         if (index === 0 && col.startsWith('Id')) {
             return 'id'; // Renombrar a 'id' si es la primera columna
         }
@@ -43,73 +43,116 @@ const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
 // Definición p.strategy
 const strategies = {
     insert: (snakeTableName, snakeColumns, values) => {
-        snakeTableName = snakeTableName === 'reposicion_estado_reposicions' ? 'pedido_estados' : snakeTableName;
         outputStream.write(`INSERT ${snakeTableName} (${snakeColumns}) VALUES (${values.join(', ')});\n`);
     },
 
-    dateFilterInsert: (snakeTableName, snakeColumns, values, createdAtIndex) => {
-       
-        const createdAtStr = values[createdAtIndex].replace(/'/g, '');
-        
-        const createdAt = new Date(createdAtStr);
-       
-        const fechaLimite = new Date('2024-01-01');
+    insert_familia: (snakeTableName, snakeColumns, values) => {
+        const excludeColumns = ['created_by', 'created_at','update_by','update_at'];
+        // Filtrar columnas y valores
+        const filteredColumns = [];
+        const filteredValues = [];
+    
+        snakeColumns.forEach((col, index) => {
+            if (!excludeColumns.includes(col)) {
+                filteredColumns.push(col);
+                filteredValues.push(values[index]);
+            }
+        });
+    
+        // Generar y escribir la consulta con los datos filtrados
+        outputStream.write(`INSERT ${snakeTableName} (${filteredColumns}) VALUES (${filteredValues.join(', ')});\n`);
+    },
 
-     
-        // Comparar fechas
+    dateFilterInsert: (snakeTableName, snakeColumns, values, createdAtIndex) => {
+       // console.log("nombre tabla sankeTable", snakeColumns)
+        const excludeColumns = ['created_by', 'created_at', 'updated_by', 'updated_at'];
+        const createdAtStr = values[createdAtIndex].replace(/'/g, '');
+        const createdAt = new Date(createdAtStr);
+        const fechaLimite = new Date('2024-01-01');
+    
         if (createdAt > fechaLimite) {
-            
-            strategies.insert(snakeTableName, snakeColumns, values);
+            // Filtrar las columnas excluidas
+            const filteredColumns = [];
+            const filteredValues = [];
+    
+            snakeColumns.forEach((col, index) => {
+                if (!excludeColumns.includes(col)) {
+                    filteredColumns.push(col);
+                    filteredValues.push(values[index]);
+                }
+            });
+    
+            strategies.insert(snakeTableName, filteredColumns, filteredValues);
         }
     },
+
     imageInsert: (snakeTableName, snakeColumns, values) => {
-        snakeTableName = 'producto_imagenes';
-
-        columns = snakeColumns.filter(col => col !== 'url').map(col => {
-            return col === 'urlexterna' ? 'ubicacion' : col;
-        });
-
-        values = values.filter((_, index) => {
-            return columns[index] !== undefined; // Solo mantener valores que tengan columnas correspondientes
-        });
-
-        if (columns.length === values.length) {
-            strategies.insert(snakeTableName, columns, values);
-        }
+        snakeTableName = 'productos_imagenes';
+        const columns = snakeColumns.map(col => col === 'urlexterna' ? 'url_externa' : col);
+        strategies.insert(snakeTableName, columns, values);
+  
     },
     productInsert: (snakeTableName, snakeColumns, values) => {
-        const idIndex = snakeColumns.indexOf('id');
-        const jerarquiaIndex = snakeColumns.indexOf('jerarquia_producto');
-
-        //ME fijo que exista
-        const idValue = idIndex !== -1 ? values[idIndex] : null;
-        const jerarquiaValue = jerarquiaIndex !== -1 ? values[jerarquiaIndex] : null;
-
-        const skipInsert = idValue === '0' || (jerarquiaValue && (jerarquiaValue.includes('FAS') || jerarquiaValue.includes('CUP')));
-
-        if (!skipInsert) {
-            snakeColumns.push('apto_dev_rediaf');
-            values.push(0);
-            strategies.insert(snakeTableName, snakeColumns, values);
+        //console.log("nombre columnas",snakeColumns);
+        
+       /* if(snakeColumns == 'id_tipo_producto'){
+            console.log('pasa');
+            snakeColumns = 'tipo_producto_relacion'
         }
+
+        if(snakeColumns == 'id_familia_producto'){
+            snakeColumns = 'familia_producto_relacion'
+        }
+            */
+        snakeColumns = snakeColumns.map(col => 
+            col === 'id_tipo_producto' ? 'tipo_producto_relacion' :
+            col === 'id_familia_producto' ? 'familia_producto_relacion' :
+            col
+        );
+
+        const excludeColumns = [
+            //'id_producto_logistica',
+            //'id_familia_producto',
+            //'id_tipo_producto',
+            //'jerarquia_producto',
+            'created_by',
+            'created_at',
+            'updated_by',
+            'updated_at',
+            //'periodicidad',
+            'descripcion'
+        ];
+    
+        // Filtrar columnas y valores
+        const filteredColumns = [];
+        const filteredValues = [];
+    
+        snakeColumns.forEach((col, index) => {
+            if (!excludeColumns.includes(col)) {
+                filteredColumns.push(col);
+                filteredValues.push(values[index]);
+            }
+        });
+    
+        // Agregar la nueva columna
+        filteredColumns.push('apto_devolucion_rediaf');
+        filteredValues.push(0);
+    
+        // Insertar con los datos filtrados
+        strategies.insert(snakeTableName, filteredColumns, filteredValues);
+     
     }
 };
 
 // Mapeo de tablas a estrategias
 const tableStrategies = {
-    'producto_familia_productos': strategies.insert,
+    'producto_familia_productos': strategies.insert_familia,
     'producto_tipo_productos': strategies.insert,
-    'reposicion_estado_reposicions': strategies.insert,
-    'devolucion_productos_fuera_rediafs': strategies.insert,
-    'producto_descripcions': strategies.dateFilterInsert,
+    'producto_descripciones': strategies.dateFilterInsert,
     'producto_circulados': strategies.dateFilterInsert,
-    'producto_asignados': strategies.dateFilterInsert,
-    'reposicions': strategies.dateFilterInsert,
     'app_productos_imagenes': strategies.imageInsert,
-    'documentos_tipo_documentos': strategies.insert,
-    'documentos': strategies.dateFilterInsert,
-    'productos': strategies.productInsert
-    
+    'productos': strategies.productInsert,
+    'devolucion_productos_fuera_rediafs': strategies.insert,
 };
 
 rl.on('line', (line) => {
@@ -124,42 +167,34 @@ rl.on('line', (line) => {
         .replace(/^\s*GO\s*$/gm, '')
         .replace(/USE\s+\[(.*?)\]/g, 'USE $1;')
         .replace(/(\d+\.\d+)\s+AS Decimal\(\d+,\s*\d+\)\s*\)/g, '$1')
-        .replace(/CreatedAt/g, 'CreatedA')
-        .replace(/CreatedBy/g, 'CreatedB')
-        .replace(/UpdatedBy/g, 'UpdatedB')
-        .replace(/UpdatedAt/g, 'UpdatedA')
-        .replace(/UpdateAt/g, 'UpdatedA')
-        .replace(/UpdateBy/g, 'UpdatedB')
         .replace(/(?<=[^' ])''(?=[^' ])/g, '');
-
+        
     const match = modifiedLine.match(/INSERT\s+(\w+)\s*\(([^)]+)\)\s+VALUES\s*\((.+)\)/);
-
+    
     if (match) {
         
         let tableName = match[1];
         let columns = renameIdColumns(match[2].split(',').map(col => col.trim()),tableName);     
         let values = match[3].match(/'[^']*'|[^, ]+/g).map(v => v.trim());
 
-        
         // Paso el nombre de la tabla a miniscula y agrego 's' al final
         let snakeTableName = `${convertToSnakeCase(tableName)}${convertToSnakeCase(tableName).endsWith('s') ? '' : 's'}`;
         // Paso el nombre de las columnas en minuscula
         let snakeColumns = columns.map(col => convertToSnakeCase(col));
         
-        
         const strategy = tableStrategies[snakeTableName];
-        
-        if (snakeTableName === 'producto_descripcions' || snakeTableName === 'producto_circulados' || 
-           snakeTableName === 'producto_asignados' || snakeTableName === 'reposicions' 
-           || snakeTableName === 'documentos') 
+    
+        if (snakeTableName === 'producto_descripciones' || snakeTableName === 'producto_circulados')  
+          
         { 
-            
-            const createdAtIndex = snakeColumns.findIndex(col => col.trim() === 'created_a' || col.trim() === 'fecha_documento');
-            if (createdAtIndex !== -1 && createdAtIndex < values.length) {
+            const createdAtIndex = snakeColumns.findIndex(col => col.trim() === 'created_at');
+           
+            if (createdAtIndex !== -1) {
               
                 strategy(snakeTableName, snakeColumns, values, createdAtIndex);
             }
-        } else if (strategy) {
+        } 
+        else if (strategy) {
             strategy(snakeTableName, snakeColumns, values);
         }
         
@@ -176,55 +211,41 @@ rl.on('close', () => {
     SET p.apto_dev_rediaf = 1
     WHERE p.id_producto_logistica IS NOT NULL;
     
-    INSERT INTO producto_edicions(id_producto_circulado,id_producto_logistica, fecha_circulacion, edicion, descripcion,
-        created_b, created_a, updated_b, updated_a, precio, flasheable, habilitado_reposicion)
-    SELECT pc.id, pd.id_producto_logistica, pd.fecha_circulacion, pd.edicion, pd.descripcion, "Proceso Migrado", pc.created_a,
-        "", NULL, pd.precio, pc.flasheable, pc.habilitado_reposicion
-    FROM producto_descripcions pd       
-    JOIN producto_circulados pc ON pd.id_producto_logistica = pc.id_producto_logistica 
-    and pc.edicion = pd.edicion and pd.fecha_circulacion = pc.fecha_circulacion;
+  
+    INSERT INTO producto_ediciones(id_producto,id_producto_logistica, fecha_circulacion, edicion, descripcion,
+         precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion)
+    SELECT NULL, pd.id_producto_logistica, pd.fecha_circulacion, pd.edicion, pd.descripcion, pd.precio, 
+         pc.habilitado_reposicion,pd.texto_comercial,NULL,pi.url_externa,0
+    FROM producto_descripciones pd       
+    JOIN producto_circulados pc ON pd.id_producto_logistica = pc.id_producto_logistica and pc.edicion = pd.edicion and pd.fecha_circulacion = pc.fecha_circulacion
+    JOIN productos_imagenes pi  ON pi.id_producto_logistica = pd.id_producto_logistica AND pi.edicion = pd.edicion;
+
+   
+    insert into productos_id_tipo_producto_links(producto_id,producto_tipo_producto_id)
+        select p.id, producto_tipo_productos.id
+        from productos p
+        join producto_tipo_productos ON p.tipo_producto_relacion = producto_tipo_productos.id
 	
-    INSERT INTO pedidos (
-        id_producto_edicion, id_agente,cantidad_teorica,cantidad, created_b,created_a,updated_b,   
-        updated_a, precio,fecha_tope_devolucion,id_carga,fecha_vencimiento_factura, cantidad_suscripcion,
-        id_clase_entrega,id_estado_pedido,enviado_concentrador,id_canilla,fecha_tope_repo, repo_notificada  
-        )
-    SELECT  
-        pe.id, pa.id_medio_de_entrega,pa.cantidad_teorica, pa.cantidad_real,'Proceso Migrado',    
-        pa.created_a, '', NULL, pa.precio_unidad,pa.fecha_tope_devolucion, pa.id_carga,
-        pa.fecha_vencimiento_factura,  pa.cantidad_suscripcion,pa.id_clase_entrega,NULL,NULL,NULL,NULL,NULL
-        
-    FROM 
-        producto_edicions pe
-    JOIN 
-        producto_asignados pa ON pe.id_producto_circulado = pa.id_producto_circulado
-        and pa.id_clase_entrega = 'QDES';
-        
-    INSERT INTO pedidos (
-        id_producto_edicion, id_agente,cantidad_teorica,cantidad, created_b,created_a,updated_b,   
-        updated_a, precio,fecha_tope_devolucion,id_carga,fecha_vencimiento_factura, cantidad_suscripcion,
-        id_clase_entrega,id_estado_pedido,enviado_concentrador,id_canilla,fecha_tope_repo, repo_notificada  
-        )
+    insert into producto_familia_productos_producto_links(producto_id,producto_familia_producto_id)
+        select p.id, producto_familia_productos.id
+        from productos p
+        join producto_familia_productos ON p.familia_producto_relacion = producto_familia_productos.id
+ 	
+    UPDATE productos_imagenes
+    SET published_at = now();
+
+    UPDATE productos
+    SET published_at = now();
+
+    UPDATE producto_ediciones
+    SET published_at = now();
+
+    UPDATE producto_tipo_productos
+    SET published_at = now();
+
+    UPDATE producto_familia_productos
+    SET published_at = now();
     
-    SELECT DISTINCT
-        pe.id,pa.id_medio_de_entrega, pa.cantidad_teorica, pa.cantidad_real, 'Proceso Migrado',    
-        pa.created_a, '', NULL, pa.precio_unidad, pa.fecha_tope_devolucion, pa.id_carga,
-        pa.fecha_vencimiento_factura, pa.cantidad_suscripcion, pa.id_clase_entrega,r.id_estado_reposicion,
-        r.enviado_concentrador,r.id_canilla,r.fecha_tope_repo,r.repo_notificada
-    FROM producto_asignados  pa
-    JOIN reposicions r ON pa.id = r.id_producto_asignado_resultante
-    JOIN producto_edicions  pe ON pa.id_producto_circulado = pe.id_producto_circulado
-    WHERE  pa.id_clase_entrega = 'REP';
-
-    INSERT INTO documento_facturas(id_documento,id_posicion,id_tipo_documento,id_documento_origen,fecha_documento,referencia_documento,
-        id_clase_documento_origen,id_agente_pagador,id_agente,cantidad, precio, fecha_tope_de_devolucion,
-        procesado, fecha_vencimiento_factura,nro_pedido_sap,id_producto_circulado,id_producto_edicion)
-    SELECT d.id_documento,d.id_posicion,d.id_tipo_documento,d.id_documento_origen,d.fecha_documento,d.referencia_documento,
-    d.id_clase_documento_origen,d.id_medio_de_entrega_pagador,d.id_medio_de_entrega,d.cantidad,d.precio, d.fecha_tope_de_devolucion,
-    d.procesado,d.fecha_vencimiento_factura,d.nro_pedido_sap,d.id_producto_circulado, pe.id
-
-    FROM producto_edicions pe      
-    JOIN documentos d ON d.id_producto_circulado = pe.id_producto_circulado;	
 
 `;
 
