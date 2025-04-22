@@ -35,5 +35,6 @@ Devolucion, Devolucion_TipoDevolucion, Devolucion_EstadoDevolucion, Devolucion_E
 
 *Tablas que tiene que quedar en MySQL (minuscula de Strapi):
  devolucions, devolucion_estado_devolucions, devolucion_tipo_devolucions, devolucion_estado_logisticos, devolucion_estado_lineas 
+**migrate destacados** 
    
 
