@@ -2,18 +2,16 @@
 
 **migrateProduct_qa**  
 El archivo migrateProduct_qa, abarca las siguientes tablas: 
-Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Circulado
-APP_ProductosImagenes, Devolucion_ProductosFueraRediaf, Producto_Asignado,Reposicion, Reposicion_EstadoReposicion, ProductoAsignado, Documentos, Documentos_TipoDocumento
+Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Circulado,Devolucion_ProductosFueraRediaf
+APP_ProductosImagenes
 
 *Se crean las siguientes tablas:  
-Producto_Edicion : Viene de la union de las tablas Producto_Descripcion y Producto_Circulado.  
-Pedidos: Viene de la union de las tablas Producto_Asignado, Reposicion y Producto_Edicion.  
-Documento_Factura: Viene de la union de Documento y Producto_Edicion.  
+Producto_Edicion : Viene de la union de las tablas Producto_Descripcion y Producto_Circulado y APP_ProductosImagenes
+
 
 *Se cambiaron los nombres de las siguientes tablas:  
 APP_ProductosImagenes paso a llamarse Producto_Imagen  
-Reposicion_EstadoReposicion paso a llamarse Pedido_Estado  
-Documentos paso a llamarse Documento_Factura
+
 
 *Tablas que tienen que quedar en Strapi:
 Producto, Producto_FamiliaProducto, Producto_TipoProducto, Producto_Imagen, Producto_Edicion, Pedido, Pedido_Estado, Documento_Factura, Documento_TipoDocumento
@@ -29,12 +27,7 @@ Las siguientes tablas conservaron el id de tipo varchar que tenian de SQL Server
 Las siguientes tablas se cambio el nombre de su PK por la PK "id" de strapi:  Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Asignado
 Producto_Circulado, APP_ProductosImagenes, Reposicion, Reposicion_EstadoReposicion
 
-**migrateDevolucion_qa**  
-*Tablas que tienen que quedar en Strapi:  
-Devolucion, Devolucion_TipoDevolucion, Devolucion_EstadoDevolucion, Devolucion_EstadoLogistico, Devolucion_EstadoLinea
+neas 
 
-*Tablas que tiene que quedar en MySQL (minuscula de Strapi):
- devolucions, devolucion_estado_devolucions, devolucion_tipo_devolucions, devolucion_estado_logisticos, devolucion_estado_lineas 
-**migrate destacados** 
    
 
