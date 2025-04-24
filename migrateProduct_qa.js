@@ -4,9 +4,10 @@ const readline = require('readline');
 
 /*
 Script para la entidad Producto tiene las tabla:
-Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Asignado
-Producto_Circulado, APP_ProductosImagenes, Devolucion_ProductosFueraRediaf, Reposicion,
-Reposicion_EstadoReposicion, Documentos,Documentos_Tipo_Documento
+Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Descripcion
+Producto_Circulado, APP_ProductosImagenes, Devolucion_ProductosFueraRediaf,
+
+Devuelve las talas: Producto, Producto_tipoProducto, Producto_FamiliaProducto, Producto_Edicion
 */
 
 const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_producto.sql');

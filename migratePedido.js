@@ -2,6 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
+/*Script para generar la tabla de pedidos y pedidos_estados
+Contiene las siguientes tablas de sql: Reposicion, Producto_Asignado, Reposicion_EstadoReposicion
+Quedaron las siguientes talas: pedidos y pedidos_estados*/ 
+
 const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_pedido.sql');
 const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifpedido.sql');
 

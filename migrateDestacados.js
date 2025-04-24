@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
+/*Script para generar la tala Destacados y Destacados_Integrantes
+Contiene las siguientes tablas: App_Destacados y App_Destacados_Integrantes*/
+
 const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_destacado.sql');
 const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifdestacado.sql');
 

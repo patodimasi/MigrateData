@@ -2,6 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
+/*script para generar la tabla Agentes
+Contiene las siguientes tablas: MediosDeEntrega y App_MediosDeEntregaExcluidos
+Devuelve nada mas Agentes*/
+
 const filePath = path.join('C:', 'Users', 'cwybranski', 'OneDrive - S.A. La Nacion', 'Documentos', 'scriptAgente.sql');
 const outputPath = path.join('C:', 'Users', 'cwybranski', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifiedagente.sql');
 
@@ -102,7 +106,7 @@ rl.on('close', () => {
      SET SQL_SAFE_UPDATES = 0;
 	
     UPDATE agentes a
-    JOIN app_medios_de_entrega_excluidos me ON a.id_agente = me.id_medio_de_entrega
+    JOIN medios_de_entrega_excluidos me ON a.id_agente = me.id_medio_de_entrega
     SET a.agente_excluido = 1
 
     UPDATE app_medios_de_entrega_excluidos
