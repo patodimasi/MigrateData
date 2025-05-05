@@ -42,6 +42,11 @@ const readline = require('readline');
                 - Save as: Unicode text
                 - Opción de codificación correcta al guardar (UTF-8 si lo permite)
             - Click en OK, luego Next → Finish.
+
+    5- Al estar exportados los archivos, recordar cambiar los valores de las variables
+       "archivoSQLServer" la cual debe hacer referencia al path donde esté el archivo exportado desde SQLServer y
+       "archivoMySQL" la cual debe hacer referencia al path donde esté el archivo exportado desde MySQL
+       PD: modificar la variable "outputPath" a donde queremos que el archivo "output" se guarde.
 */
 
 const archivoSQLServer = path.join('C:', 'Users', 'aordonez', 'Documents', 'canillaDataFromSQLServer.sql');
