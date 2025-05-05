@@ -10,10 +10,6 @@ Producto_Edicion : Viene de la union de las tablas Producto_Descripcion y Produc
 
 
 *Talas que tienen que quedar por el momento en Strapi y mysql:
-productos, producto_tipo_productos, producto_familia_productos (APP_ProductosImagenes),producto_circulados,devolucion_productos_fuera_rediaf
+productos, producto_tipo_productos, producto_familia_productos (APP_ProductosImagenes),producto_circulados,devolucion_productos_fuera_rediaf, canillas, canilla_motivos
 
-*Tablas que van a tener que ser eliminadas: producto_familia_productos, producto_circulados, devolcuion_productos_fuera_rediaf
-
-
-
-
+*Tablas que van a tener que ser eliminadas: producto_familia_productos, producto_circulados, devolcuion_productos_fuera_rediaf, canilla_matricula, APP_Canillas, APP_CanillasAdicional, APP_CanillasMotivos
