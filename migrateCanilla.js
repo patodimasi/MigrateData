@@ -5,14 +5,43 @@ const readline = require('readline');
 /*  Script para migrar datos relacionados a los Canillas.
 
     1- Se extrae información desde dos fuentes:
-        1.1- MySQL ln_sgdiweb (tablas: "canilla_matricula")
-        1.2- SQLServer ln_sgdi (tablas: "APP_Canillas", "APP_CanillasAdicional", "APP_CanillasMotivos")
+        - MySQL (db: "ln_sgdiweb") (tablas: "canilla_matricula")
+        - SQLServer (db: "ln_sgdi") (tablas: "APP_Canillas", "APP_CanillasAdicional", "APP_CanillasMotivos")
 
     2- Se escriben las sentencias SQL necesarias en el archivo output, el cual luego debe ser importado y ejecuta en el MySQL de Strapi.
 
     3- Observaciones:
-        3.1- Se deben modificar las variables "archivoSQLServer", "archivoMySQL" y "outputPath" para determinar los "paths" de los inputs y outputs del proceso.
-        3.2- Los archivos de origen (el de MySQL y SQLServer), deben tener cada "INSERT" en una linea aparte (respestando su estructura de INSERT - COLUMNAS - VALUES)
+        - Se deben modificar las variables "archivoSQLServer", "archivoMySQL" y "outputPath" para determinar los "paths" de los inputs y outputs del proceso.
+        - Los archivos de origen (el de MySQL y SQLServer), deben tener cada "INSERT" en una linea aparte (respestando su estructura de INSERT - COLUMNAS - VALUES)
+
+    4- Paso a paso para exportar la información desde los origenes (MySQL y SQLServer)
+
+        4.1- Información desde MySQL
+            - Generar un export de datos de la tabla (canilla_matricula) donde solo exporte los datos (sin incluir la creación de la tabla)
+              en donde cada registro sea un insert (debe tener INSERT INTO, Nombre de columnas y VALUES) de manera independiente.
+            - En el caso de no poder hacer el punto anterior, ya sea porque el usuario de MySQL sgdiweb no tenga permisos o por otro motivo, seguir los siguientes pasos:
+                - Abrir la consola e ingresar en la ruta de la carpeta C:\Program Files\MySQL\MySQL Server 8.0\bin
+                - Una ves posicionados en la ruta especificada, ejecutar el siguiente comando (declarar el path de salida que corresponda):
+                  "& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe" -h sgdiweb.c4e6gufrqj4g.us-east-1.rds.amazonaws.com -u pdimasi -p --port=3306 --single-transaction --default-character-set=utf8 --set-gtid-purged=off --no-tablespaces --no-create-info --complete-insert ln_sgdiweb canilla_matricula > "C:\Users\testUser\Documents\test_datos.sql"
+            - Una vez tengamos el archivo, debemos asegurarnos que cada registros esté en un INSERT INTO independiente donde cada linea debe contar con el "INSERT INTO",
+              los nombres de las columnas, la sentencia "VALUES" y los valores correspondientes.
+
+        4.2- Información desde SQLServer
+            - Hacé clic derecho sobre la base de datos o las tablas deseadas → Tasks → Generate Scripts.
+            - En el paso "Choose Objects", seleccioná:
+                - Select specific database objects
+                - Marcá solo las tablas necesarias
+            - En el paso "Set Scripting Options:
+                - Seleccioná: Save as script file
+                - Elegí un nombre y carpeta para guardarlo.
+                - Clic en Advanced
+            - En la ventana Advanced Scripting Options:
+                - Buscá la opción: Types of data to script
+                - Cambiá el valor de Schema only a: Data only
+            - Confirmá que:
+                - Save as: Unicode text
+                - Opción de codificación correcta al guardar (UTF-8 si lo permite)
+            - Click en OK, luego Next → Finish.
 */
 
 const archivoSQLServer = path.join('C:', 'Users', 'aordonez', 'Documents', 'canillaDataFromSQLServer.sql');
