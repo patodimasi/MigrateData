@@ -40,7 +40,7 @@ Instrucciones con respecto al script para migrar datos relacionados a los Canill
 
 3. Observaciones:
     - Se deben modificar las variables `archivoSQLServer`, `archivoMySQL` y `outputPath` para determinar los "paths" de los inputs y outputs del proceso.
-    - Los archivos de origen (el de MySQL y SQLServer), *deben tener cada "INSERT" en una linea aparte* (respestando su estructura de INSERT - COLUMNAS - VALUES).
+    - Los archivos de origen (el de MySQL y SQLServer), **deben tener cada "INSERT" en una linea aparte** (respestando su estructura de INSERT - COLUMNAS - VALUES).
 
 4. Paso a paso para exportar la información desde los origenes (MySQL y SQLServer)
     - Información desde MySQL
