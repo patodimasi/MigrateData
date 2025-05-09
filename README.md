@@ -8,7 +8,7 @@ APP_ProductosImagenes  (SQL_SERVER)
 *Se crean las siguientes tablas:  
 Producto_Edicion : Viene de la union de las tablas Producto_Descripcion y Producto_Circulado y APP_ProductosImagenes
 
-*Talas que tienen que quedar por el momento en Strapi y mysql:
+*Tablas que tienen que quedar por el momento en Strapi y mysql:
 productos, producto_tipo_productos, producto_familia_productos (APP_ProductosImagenes),producto_circulados,devolucion_productos_fuera_rediaf
 
 *Tablas que van a tener que ser eliminadas: producto_familia_productos, producto_circulados, devolcuion_productos_fuera_rediaf
@@ -26,7 +26,7 @@ Pedido_Estado: se le cambio el nombre a la tala que venia de SQL Reposicion_Esta
 *Tablas que tienen que quedar en strapi y mysql:
 Pedidos,Pedidos_Estados
 
-*Talas que van a tener que ser eliminadas:
+*Tablas que van a tener que ser eliminadas:
 Producto_Asignado, Reposicion, Producto_Circulado
 
 ## **migrateCanilla**
@@ -81,3 +81,27 @@ Instrucciones con respecto al script para migrar datos relacionados a los Canill
         - `APP_CanillasAdicional`
         - `APP_CanillasMotivos`
         - `canilla_matricula`
+
+## **migrate Destacados**        
+El archivo migrateDestacados abarca las siguientes tablas:
+App_Destacados y App_Destacados_Integrantes pertenecientes a SQL SERVER
+
+* Se crean las siguientes tablas: destacados y destacado_integrantes en my sql (strapi) en realidad se le cambio el nombre a las tablas originales de sql server.
+
+* Se le agrega a la tabla destacados los siguientes campos: activo (arranca con valor cero) y el campo destacado_relacion (arranca con el valor idvalue) para vincular la tabla destacados con la tabla destacados_integrantes
+* Se agrega a la tabla destacado_intgerantes el campo idProducto el cual sera en un futuro el SKU
+
+* Tablas que se tienen que borrar: Ninguna ya que las que estan en mysql eran las que estaban en SQL SERVER con el nombre cambiado.
+
+* Tablas que tienen que quedar en mysql, strapi: destacados y destacos_integrantes
+
+## ** migrate Agente++
+
+El archivo migrateAgente abarca las siguientes tabblas:
+MediosDeEntrega y App_MediosDeEntregaExcluidos ambas pertenecientes a SQL SERVER
+
+* Se crean las siguientes tablas: agente en mysql , strapi, esta tabla viene del join de la tabla MediosDeEntrega y App_MediosDeEntregaExcluidos se agregan los campos agente_rediaf (cuyo valor es cero) y agente_excluido (arranca en cero en el insert) pero este campo es el que va a cambiar al hacer join entre la tabla MediosDeEntrega y App_MediosDeEntregaExcluidos
+
+* Tablas que se tienen que borrar: App_MediosDeEntregaExcluidos, la de MediosDeEntrega cambio el nombre por agentes por lo tanto no esta en mysql
+
+* Tablas que tienen que quedar en mysql, strapi: agentes
