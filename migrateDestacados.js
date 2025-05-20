@@ -2,9 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-/*Script para generar la tala Destacados y Destacados_Integrantes
-Contiene las siguientes tablas: App_Destacados y App_Destacados_Integrantes*/
-
+/*Script para generar la tabla Destacados*/ 
 const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_destacado.sql');
 const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifdestacado.sql');
 
@@ -18,37 +16,6 @@ function convertToSnakeCase(str) {
 }
 
 const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
-
-const destacadointegrate = (tabla, columna, valor) =>{
-
-    const excludeColumns = ['IdDestacado'];
-    const filteredColumns = [];
-    const filteredValues = [];
-
-    columna.forEach((col, index) => {
-       
-        if (!excludeColumns.includes(col)) {
-            filteredColumns.push(convertToSnakeCase(col));
-            filteredValues.push(valor[index]);
-        }
-    });
-    
-    tabla = 'destacado_integrantes'
-    columna.push('IdProducto');  // Nombre de la nueva columna
-    valor.push('NULL');                // Valor de la nueva columna
-
-    const snakeColumns = columna.map(col => {
-        // Primero, reemplazar 'IdDestacadoIntegrante' por 'id'
-        if (col === 'IdDestacadoIntegrante') {
-            return 'id';  // Devolver 'id' si la columna es 'IdDestacadoIntegrante'
-        } else {
-            // Si no es 'IdDestacadoIntegrante', convertir a snake_case
-            return convertToSnakeCase(col);
-        }
-    });
-   
-    outputStream.write(`INSERT INTO ${convertToSnakeCase(tabla)} (${snakeColumns.join(', ')}) VALUES (${valor.join(', ')});\n`);
-}
 
 const destacados = (tabla, columna, valor) => {
     console.log("llega al destacado", tabla, columna, valor);
@@ -71,14 +38,13 @@ const destacados = (tabla, columna, valor) => {
     filteredColumns.push('activo');
         filteredValues.push(0);
 
-    filteredColumns.push('destacado_relacion');
-        filteredValues.push(idValue);    
+    filteredColumns.push('orden');
+        filteredValues.push('NULL');    
 
     outputStream.write(`INSERT INTO ${convertToSnakeCase(tabla)} (${filteredColumns.join(', ')}) VALUES (${filteredValues.join(', ')});\n`);
 }
 
 rl.on('line', (line) => {
-    
     const modifiedLine = line
         .replace(/\[dbo\]\s*\./g, '')      // Elimina [dbo].
         .replace(/\[/g, '')               // Elimina corchetes de apertura.
@@ -99,41 +65,14 @@ rl.on('line', (line) => {
         let columns = match[2].split(',').map(col => col.trim());  // CORREGIDO
         let values = match[3].match(/'[^']*'|[^, ]+/g).map(v => v.trim());
 
-        if (tableName === 'APP_Destacados') {
-            destacados(tableName, columns, values);
-        } else {
-            destacadointegrate(tableName, columns, values)
-            //outputStream.write(modifiedLine + '\n');
-        }
+      
+        destacados(tableName, columns, values);
     }
-
-    //outputStream.write(modifiedLine + '\n'); // Escribe la línea modificada en el archivo de salida.
+ 
 });
 
 rl.on('close', () => {
-   
-    const combinedStatement = `
-    SET SQL_SAFE_UPDATES = 0;
-    
-    INSERT INTO destacado_integrantes_destacado_links (destacado_integrante_id, destacado_id)
-        SELECT 
-        di.id AS destacado_integrante_id, 
-        d.id AS destacado_id
-    FROM 
-        destacados d
-    JOIN 
-    destacado_integrantes di 
-    ON d.destacado_relacion = di.id_destacado
-
-     UPDATE destacados
-    SET published_at = now();
-    
-     UPDATE destacado_integrantes
-    SET published_at = now();
-
-    `;
-
-    outputStream.write(combinedStatement); // Escribir la declaración combinada
-    outputStream.end(); // Cierra el archivo de salida correctamente.
-    console.log(`Archivo procesado y guardado en: ${outputPath}`);
+    outputStream.end(() => {
+        console.log(`Archivo procesado y guardado en: ${outputPath}`);
+    });
 });
