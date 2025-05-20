@@ -82,7 +82,9 @@ Instrucciones con respecto al script para migrar datos relacionados a los Canill
         - `APP_CanillasMotivos`
         - `canilla_matricula`
 
-## **migrate Destacados**        
+## **migrate Destacados**       
+
+#QUEDO VIEJO#
 El archivo migrateDestacados abarca las siguientes tablas:
 App_Destacados y App_Destacados_Integrantes pertenecientes a SQL SERVER
 
@@ -94,6 +96,18 @@ App_Destacados y App_Destacados_Integrantes pertenecientes a SQL SERVER
 * Tablas que se tienen que borrar: Ninguna ya que las que estan en mysql eran las que estaban en SQL SERVER con el nombre cambiado.
 
 * Tablas que tienen que quedar en mysql, strapi: destacados y destacos_integrantes
+
+#NUEVO#
+Este script antes trataba las tablas App_Destacados y App_Destacados_integrantes
+ahora solo tiene la tabla App_Destacados no se va a migrar la tabla App_Destacados_integrantes
+ya que en la nueva tabla de strapi se va a crear una relacion con la tabla producto_edicion
+por lo tanto en la misma tabla Destacados se va  poner elegir los productos que serian los 
+"destacados integrantes" , tambien se va a eliminar la tabla que se habia creado para relacionar destacados
+con destacados_integrantes que se llamaba  destacado_integrantes_destacado_links 
+Se agrego un campo mas a la tabla destacados que se llama orden el mismo campo comienza en null
+y es el orden que se le quiere dar a cada destacado por lo tanto:
+destacados: id, nombre, fecha_inicio, fecha_fin,activo, orden
+tabla que va a quedar en strapi: descatado (nada mas) , no hay que borrar ninguna tabla que venga de SQLServer
 
 ## ** migrate Agente++
 
