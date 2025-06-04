@@ -181,6 +181,11 @@ rl.on('line', (line) => {
         // Paso el nombre de la tabla a miniscula y agrego 's' al final
         let snakeTableName = `${convertToSnakeCase(tableName)}${convertToSnakeCase(tableName).endsWith('s') ? '' : 's'}`;
         // Paso el nombre de las columnas en minuscula
+
+        if (snakeTableName == 'producto_descripcions'){
+            snakeTableName = 'producto_descripciones'
+        }
+
         let snakeColumns = columns.map(col => convertToSnakeCase(col));
         
         const strategy = tableStrategies[snakeTableName];
