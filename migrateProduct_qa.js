@@ -225,12 +225,12 @@ rl.on('close', () => {
     insert into productos_id_tipo_producto_links(producto_id,producto_tipo_producto_id)
         select p.id, producto_tipo_productos.id
         from productos p
-        join producto_tipo_productos ON p.tipo_producto_relacion = producto_tipo_productos.id
+        join producto_tipo_productos ON p.tipo_producto_relacion = producto_tipo_productos.id;
 	
     insert into producto_familia_productos_producto_links(producto_id,producto_familia_producto_id)
         select p.id, producto_familia_productos.id
         from productos p
-        join producto_familia_productos ON p.familia_producto_relacion = producto_familia_productos.id
+        join producto_familia_productos ON p.familia_producto_relacion = producto_familia_productos.id;
  	
     UPDATE productos_imagenes
     SET published_at = now();
