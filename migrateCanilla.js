@@ -6,7 +6,7 @@ const readline = require('readline');
 
     1- Se extrae información desde dos fuentes:
         - MySQL (db: "ln_sgdiweb") (tablas: "canilla_matricula")
-        - SQLServer (db: "ln_sgdi") (tablas: "APP_Canillas", "APP_CanillasAdicional", "APP_CanillasMotivos")
+        - SQLServer (db: "ln_sgdi") (tablas: "APP_Canillas", "APP_CanillasAdicional", "APP_CanillasMotivos", "APP_CanillasEstados")
 
     2- Se escriben las sentencias SQL necesarias en el archivo output, el cual luego debe ser importado y ejecuta en el MySQL de Strapi.
 
@@ -22,7 +22,7 @@ const readline = require('readline');
             - En el caso de no poder hacer el punto anterior, ya sea porque el usuario de MySQL sgdiweb no tenga permisos o por otro motivo, seguir los siguientes pasos:
                 - Abrir la consola e ingresar en la ruta de la carpeta C:\Program Files\MySQL\MySQL Server 8.0\bin
                 - Una ves posicionados en la ruta especificada, ejecutar el siguiente comando (declarar el path de salida que corresponda):
-                  "& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe" -h sgdiweb.c4e6gufrqj4g.us-east-1.rds.amazonaws.com -u pdimasi -p --port=3306 --single-transaction --default-character-set=utf8 --set-gtid-purged=off --no-tablespaces --no-create-info --complete-insert ln_sgdiweb canilla_matricula > "C:\Users\testUser\Documents\test_datos.sql"
+                  `& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe" -h sgdiweb.c4e6gufrqj4g.us-east-1.rds.amazonaws.com -u pdimasi -p --port=3306 --single-transaction --default-character-set=utf8 --set-gtid-purged=off --no-tablespaces --no-create-info --complete-insert ln_sgdiweb canilla_matricula > "C:\Users\testUser\Documents\test_datos.sql"`
             - Una vez tengamos el archivo, debemos asegurarnos que cada registros esté en un INSERT INTO independiente donde cada linea debe contar con el "INSERT INTO",
               los nombres de las columnas, la sentencia "VALUES" y los valores correspondientes.
 
@@ -47,6 +47,18 @@ const readline = require('readline');
        "archivoSQLServer" la cual debe hacer referencia al path donde esté el archivo exportado desde SQLServer y
        "archivoMySQL" la cual debe hacer referencia al path donde esté el archivo exportado desde MySQL
        PD: modificar la variable "outputPath" a donde queremos que el archivo "output" se guarde.
+
+    6. Al concretar éxitosamente la migración de datos en su etapa final (producción), se deben eliminar algunas tablas y mantener otras, el detalle a continuación:
+        - Mantener:
+            - `canillas`
+            - `canilla_motivos`
+            - `canilla_estados`
+        - Eliminar
+            - `APP_Canillas`
+            - `APP_CanillasAdicional`
+            - `APP_CanillasMotivos`
+            - `APP_CanillasEstados`
+            - `canilla_matricula`
 */
 
 const archivoSQLServer = path.join('C:', 'Users', 'aordonez', 'Documents', 'canillaDataFromSQLServer.sql');
@@ -144,6 +156,24 @@ const writeAppCanillasMotivosData = (tabla, columns, values) => {
     outputStream.write(`INSERT INTO ${convertToSnakeCase(tabla)} (${filteredColumns.join(', ')}) VALUES (${filteredValues.join(', ')});\n`);
 }
 
+const writeAppCanillasEstadosData = (tabla, columns, values) => {
+
+    const excludeColumns = [];
+    const filteredColumns = [];
+    const filteredValues = [];
+
+    tabla = 'app_canillas_estados';
+
+    columns.forEach((col, index) => {
+        if (!excludeColumns.includes(col)) {
+            filteredColumns.push(convertToSnakeCase(col));
+            filteredValues.push(escapeSQLValue(values[index]));
+        }
+    });
+
+    outputStream.write(`INSERT INTO ${convertToSnakeCase(tabla)} (${filteredColumns.join(', ')}) VALUES (${filteredValues.join(', ')});\n`);
+}
+
 // Extracción de datos del archivo del MySQL de origen (tablas: "canilla_matricula")
 rlArchivoMySQL.on('line', (line) => {
 
@@ -178,7 +208,7 @@ rlArchivoMySQL.on('line', (line) => {
     }
 });
 
-// Extracción de datos del archivo del SQLServer de origen (tablas: "APP_Canillas", "APP_CanillasAdicional", "APP_CanillasMotivos")
+// Extracción de datos del archivo del SQLServer de origen (tablas: "APP_Canillas", "APP_CanillasAdicional", "APP_CanillasMotivos", "APP_CanillasEstados")
 rlArchivoSQLServer.on('line', (line) => {
 
     const modifiedLine = line
@@ -228,6 +258,9 @@ rlArchivoSQLServer.on('line', (line) => {
 
         if (tableName === 'APP_CanillasMotivos')
             writeAppCanillasMotivosData(tableName, columns, values);
+
+        if (tableName === 'APP_CanillasEstados')
+            writeAppCanillasEstadosData(tableName, columns, values);
     }
 });
 
@@ -335,6 +368,19 @@ INSERT INTO canilla_motivos (
         app_canillas_motivos appcm;
 
 UPDATE canilla_motivos
+SET published_at = now();
+
+INSERT INTO canilla_estados (
+    id_estado,
+    descripcion
+)
+    SELECT
+        appce.id_estado AS id_estado,
+        appce.descripcion AS descripcion
+    FROM
+        app_canillas_estados appce;
+
+UPDATE canilla_estados
 SET published_at = now();
 `;
 

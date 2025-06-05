@@ -42,7 +42,7 @@ Instrucciones con respecto al script para migrar datos relacionados a los Canill
 
 1. Se extrae información desde dos fuentes:
     - MySQL (db: `ln_sgdiweb`) (tablas: `canilla_matricula`)
-    - SQLServer (db: `ln_sgdi`) (tablas: `APP_Canillas`, `APP_CanillasAdicional`, `APP_CanillasMotivos`)
+    - SQLServer (db: `ln_sgdi`) (tablas: `APP_Canillas`, `APP_CanillasAdicional`, `APP_CanillasMotivos`, `APP_CanillasEstados`)
 
 2. El proceso escribe las sentencias SQL necesarias en el archivo output, el cual luego debe ser importado y ejecuta en el MySQL de Strapi.
 
@@ -84,10 +84,12 @@ Instrucciones con respecto al script para migrar datos relacionados a los Canill
     - Mantener:
         - `canillas`
         - `canilla_motivos`
+        - `canilla_estados`
     - Eliminar
         - `APP_Canillas`
         - `APP_CanillasAdicional`
         - `APP_CanillasMotivos`
+        - `APP_CanillasEstados`
         - `canilla_matricula`
 
 ## **migrate Destacados**       
