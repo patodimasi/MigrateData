@@ -29,6 +29,14 @@ Pedidos,Pedidos_Estados
 *Tablas que van a tener que ser eliminadas:
 Producto_Asignado, Reposicion, Producto_Circulado
 
+*Se agrego el dia 05/06/2025 un campo mas a la tabla pedido_estado quedando de la siguiente forma:
+
+id              descripcion
+0                  Creado 
+1                  Pendiente  
+2                  Despachado 
+3                  Sin stock
+
 ## **migrateCanilla**
 Instrucciones con respecto al script para migrar datos relacionados a los Canillas.
 
