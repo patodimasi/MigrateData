@@ -40,7 +40,6 @@ const readline = require('readline');
                 - Cambiá el valor de Schema only a: Data only
             - Confirmá que:
                 - Save as: Unicode text
-                - Opción de codificación correcta al guardar (UTF-8 si lo permite)
             - Click en OK, luego Next → Finish.
 
     5- Al estar exportados los archivos, recordar cambiar los valores de las variables
@@ -71,7 +70,7 @@ const rlArchivoSQLServer = readline.createInterface({
 });
 
 const rlArchivoMySQL = readline.createInterface({
-    input: fs.createReadStream(archivoMySQL, { encoding: 'utf8' }),
+    input: fs.createReadStream(archivoMySQL, { encoding: 'utf16le' }),
     crlfDelay: Infinity
 });
 

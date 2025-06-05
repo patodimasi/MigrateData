@@ -72,7 +72,6 @@ Instrucciones con respecto al script para migrar datos relacionados a los Canill
             - Cambiá el valor de Schema only a: "Data only"
         - Confirmá que:
             - Save as: Unicode text
-            - Opción de codificación correcta al guardar (UTF-8 si lo permite)
         - Click en OK, luego Next → Finish.
 
 5. Al contar con los archivos exportados listos para ser utilizados, recordar cambiar los valores de las variables:
