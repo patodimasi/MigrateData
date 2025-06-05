@@ -148,7 +148,7 @@ rl.on('close', () => {
     from producto_ediciones pe
     join pedidos p on p.id_producto_edicion = pe.id;  
 
-    NSERT INTO pedidos_pedido_estado_links(pedido_id, pedido_estado_id)
+    INSERT INTO pedidos_pedido_estado_links(pedido_id, pedido_estado_id)
     SELECT p.id, p.id_estado_pedido
     FROM pedidos p
     JOIN pedido_estados pe ON pe.id = p.id_estado_pedido
@@ -157,6 +157,9 @@ rl.on('close', () => {
     WHERE link.pedido_id IS NULL;
     
     UPDATE pedidos
+    SET published_at = now();
+
+    UPDATE pedido_estados
     SET published_at = now();
 `;
 
