@@ -2,13 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-/*Script para generar la tabla de pedidos y pedidos_estados
-Contiene las siguientes tablas de sql: Reposicion, Producto_Asignado, Reposicion_EstadoReposicion
-Quedaron las siguientes talas: pedidos y pedidos_estados*/ 
-
+/*Script para generar la tabla de pedidos y pedido_estados.
+Contiene las siguientes tablas de sql: Reposicion, Producto_Asignado,Reposicion_EstadoReposicion  
+Quedaron las siguientes tablas: pedidos, pedido_estados*/
 const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_pedido.sql');
 const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifpedido.sql');
 
+let pedidoEstadoCreadoInsertado = false;
 
 const rl = readline.createInterface({
     input: fs.createReadStream(filePath, { encoding: 'utf8' }),
@@ -21,6 +21,7 @@ function convertToSnakeCase(str) {
 
 const estadoRepo = (tabla, columna, valor) => {
     tabla = 'pedido_estados'
+  
     const columns = columna.map(col => col === 'IdEstadoReposicion' ? 'id' : col);
     outputStream.write(`INSERT INTO ${convertToSnakeCase(tabla)} (${convertToSnakeCase(columns.join(', '))}) VALUES (${valor.join(', ')});\n`);
 }
@@ -38,7 +39,7 @@ const pAsignadoRepo = (tabla, columna, valor,index) => {
     const createdAt = new Date(createdAtStr);
    
     
-    const fechaLimite = new Date('2024-01-01');
+    const fechaLimite = new Date('2024-08-01');
 
     if (createdAt > fechaLimite) {
         const filteredColumns = [];
@@ -84,6 +85,11 @@ rl.on('line', (line) => {
             
             pAsignadoRepo(tableName, columns, values,createdAtIndex);
         } else {
+            // esta bandera la creo para agregar una sola vez el campo id = 0 descripcion = 'Creado'
+            if (!pedidoEstadoCreadoInsertado) {
+                outputStream.write(`INSERT INTO pedido_estados (id, descripcion) VALUES (0, 'Creado');\n`);
+                pedidoEstadoCreadoInsertado = true;
+            }
             estadoRepo(tableName, columns, values)
         }
     }
@@ -134,7 +140,7 @@ rl.on('close', () => {
         pc.id_producto_logistica = pe.id_producto_logistica
         AND pc.edicion = pe.edicion
         AND pc.fecha_circulacion = pe.fecha_circulacion
-    ) 
+    );
 
 
     insert into pedidos_producto_edicions_links (pedido_id, producto_edicion_id)
