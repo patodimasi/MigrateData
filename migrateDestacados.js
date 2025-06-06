@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-/*Script para generar la tabla Destacados*/ 
+
 const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_destacado.sql');
 const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifdestacado.sql');
 
@@ -16,6 +16,7 @@ function convertToSnakeCase(str) {
 }
 
 const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
+
 
 const destacados = (tabla, columna, valor) => {
     console.log("llega al destacado", tabla, columna, valor);
@@ -65,10 +66,15 @@ rl.on('line', (line) => {
         let columns = match[2].split(',').map(col => col.trim());  // CORREGIDO
         let values = match[3].match(/'[^']*'|[^, ]+/g).map(v => v.trim());
 
-      
-        destacados(tableName, columns, values);
+      //  if (tableName === 'APP_Destacados') {
+            destacados(tableName, columns, values);
+        //} else {
+          //  destacadointegrate(tableName, columns, values)
+            //outputStream.write(modifiedLine + '\n');
+        //}
     }
- 
+
+    //outputStream.write(modifiedLine + '\n'); // Escribe la línea modificada en el archivo de salida.
 });
 
 rl.on('close', () => {
