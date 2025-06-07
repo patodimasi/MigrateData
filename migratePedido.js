@@ -9,8 +9,7 @@ const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion'
 const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifpedido.sql');
 
 let pedidoEstadoCreadoInsertado = false;
-// uso este estado ya que creo id = 1, y todos los demas valores se tienen que desplazar
-let nextEstadoId = 2;
+
 
 const rl = readline.createInterface({
     input: fs.createReadStream(filePath, { encoding: 'utf8' }),
@@ -26,7 +25,7 @@ const estadoRepo = (tabla, columna, valor) => {
     // se agrega un estado mas id= 0 descripcion = 'Creado'
   
     const columns = columna.map(col => col === 'IdEstadoReposicion' ? 'id' : col);
-    valor[0] = nextEstadoId++;
+    
     outputStream.write(`INSERT INTO ${convertToSnakeCase(tabla)} (${convertToSnakeCase(columns.join(', '))}) VALUES (${valor.join(', ')});\n`);
 }
 
@@ -91,7 +90,7 @@ rl.on('line', (line) => {
             pAsignadoRepo(tableName, columns, values,createdAtIndex);
         } else {
           if (!pedidoEstadoCreadoInsertado) {
-                outputStream.write(`INSERT INTO pedido_estados (id, descripcion) VALUES (1, 'Creado');\n`);
+                outputStream.write(`INSERT INTO pedido_estados (id, descripcion) VALUES (4, 'Creado');\n`);
                 pedidoEstadoCreadoInsertado = true;
             }
             estadoRepo(tableName, columns, values)
