@@ -278,7 +278,7 @@ INSERT INTO canillas (
     id_agente,
     nro_cuenta_hija,
     habilitado_repo,
-    estado,
+    id_estado,
     matricula,
     paquete,
     dni,
@@ -311,7 +311,7 @@ INSERT INTO canillas (
         appc.nombre AS nombre,
         appc.id_medio_de_entrega_padre AS id_agente,
         appc.nro_cuenta_hija AS nro_cuenta_hija,
-        appc.habilitado_repo AS habilitado_repo,
+        IFNULL(appc.habilitado_repo, 0) AS habilitado_repo,
         appc.id_estado AS estado,
         cm.matricula AS matricula,
         appca.paquete AS paquete,
@@ -327,12 +327,12 @@ INSERT INTO canillas (
         NULL,
         NULL,
         NULL,
-        appca.tiene_reparto AS tiene_reparto,
-        appca.entrega_suscripcion_diario AS entrega_suscripcion_diario,
-        appca.entrega_suscripcion_revistas AS entrega_suscripcion_revistas,
-        appca.carga_diario AS carga_diario,
-        appca.carga_revista AS carga_revista,
-        appca.carga_opcionales AS carga_opcionales,
+        IFNULL(appca.tiene_reparto, 0) AS tiene_reparto,
+        IFNULL(appca.entrega_suscripcion_diario, 0) AS entrega_suscripcion_diario,
+        IFNULL(appca.entrega_suscripcion_revistas, 0) AS entrega_suscripcion_revistas,
+        IFNULL(appca.carga_diario, 0) AS carga_diario,
+        IFNULL(appca.carga_revista, 0) AS carga_revista,
+        IFNULL(appca.carga_opcionales, 0) AS carga_opcionales,
         appc.id_motivo AS id_motivo,
         appc.fecha_reasignacion AS fecha_reasignacion,
         appc.reasignado_por AS reasignado_por
@@ -381,6 +381,16 @@ INSERT INTO canilla_estados (
 
 UPDATE canilla_estados
 SET published_at = now();
+
+INSERT INTO canillas_motivo_links (canilla_id, canilla_motivo_id)
+SELECT c.id, cm.id
+FROM canilla_motivos cm
+JOIN canillas c ON c.id_motivo = cm.id;
+
+INSERT INTO canillas_estado_links (canilla_id, canilla_estado_id)
+SELECT c.id, ce.id
+FROM canilla_estados ce
+JOIN canillas c ON c.id_estado = ce.id_estado;
 `;
 
 const checkDone = () => {
