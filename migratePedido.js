@@ -10,6 +10,7 @@ const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacio
 
 let pedidoEstadoCreadoInsertado = false;
 
+
 const rl = readline.createInterface({
     input: fs.createReadStream(filePath, { encoding: 'utf8' }),
     crlfDelay: Infinity
@@ -21,10 +22,13 @@ function convertToSnakeCase(str) {
 
 const estadoRepo = (tabla, columna, valor) => {
     tabla = 'pedido_estados'
+    // se agrega un estado mas id= 0 descripcion = 'Creado'
   
     const columns = columna.map(col => col === 'IdEstadoReposicion' ? 'id' : col);
+    
     outputStream.write(`INSERT INTO ${convertToSnakeCase(tabla)} (${convertToSnakeCase(columns.join(', '))}) VALUES (${valor.join(', ')});\n`);
 }
+
 
 const pAsignadoRepo = (tabla, columna, valor,index) => {
     
@@ -85,9 +89,8 @@ rl.on('line', (line) => {
             
             pAsignadoRepo(tableName, columns, values,createdAtIndex);
         } else {
-            // esta bandera la creo para agregar una sola vez el campo id = 0 descripcion = 'Creado'
-            if (!pedidoEstadoCreadoInsertado) {
-                outputStream.write(`INSERT INTO pedido_estados (id, descripcion) VALUES (0, 'Creado');\n`);
+          if (!pedidoEstadoCreadoInsertado) {
+                outputStream.write(`INSERT INTO pedido_estados (id, descripcion) VALUES (4, 'Creado');\n`);
                 pedidoEstadoCreadoInsertado = true;
             }
             estadoRepo(tableName, columns, values)
@@ -100,13 +103,15 @@ rl.on('close', () => {
    
     const combinedStatement = `
 
+     SET SQL_SAFE_UPDATES = 0;
+
     INSERT INTO pedidos (
         id_producto, id_producto_logistica,edicion,fecha_circulacion,id_agente,cantidad_teorica,cantidad,precio,fecha_tope_devolucion,id_carga,
         cantidad_suscripcion, id_clase_entrega,id_estado_pedido,enviado_concentrador,id_canilla,fecha_tope_repo, 
         repo_notificada  
         )
     SELECT  
-        null,pe.id_id_producto_logistica,pe.edicion,fecha_circulacion,pa.id_medio_de_entrega,pa.cantidad_teorica, pa.cantidad_real,pa.precio_unidad,pa.fecha_tope_devolucion, 
+        null,pe.id_producto_logistica,pe.edicion,pe.fecha_circulacion,pa.id_medio_de_entrega,pa.cantidad_teorica, pa.cantidad_real,pa.precio_unidad,pa.fecha_tope_devolucion, 
         pa.id_carga, pa.cantidad_suscripcion,pa.id_clase_entrega,NULL,NULL,NULL,NULL,NULL        
     FROM 
         producto_circulados pc
@@ -124,7 +129,7 @@ rl.on('close', () => {
 
 
     INSERT INTO pedidos (
-        id_producto,id_producto_logistica,edicion, fecha_circulacion,descripcion,id_agente,cantidad_teorica,cantidad,precio,fecha_tope_devolucion,id_carga,
+        id_producto,id_producto_logistica,edicion, fecha_circulacion,id_agente,cantidad_teorica,cantidad,precio,fecha_tope_devolucion,id_carga,
         cantidad_suscripcion, id_clase_entrega,id_estado_pedido,enviado_concentrador,id_canilla,fecha_tope_repo, 
         repo_notificada  
         )
@@ -143,10 +148,11 @@ rl.on('close', () => {
     );
 
 
-    insert into pedidos_producto_edicions_links (pedido_id, producto_edicion_id)
+    /*insert into pedidos_producto_edicions_links (pedido_id, producto_edicion_id)
     select p.id, pe.id
     from producto_ediciones pe
     join pedidos p on p.id_producto_edicion = pe.id;  
+    */
 
     INSERT INTO pedidos_pedido_estado_links(pedido_id, pedido_estado_id)
     SELECT p.id, p.id_estado_pedido
