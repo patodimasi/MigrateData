@@ -107,12 +107,11 @@ rl.on('close', () => {
 
     INSERT INTO pedidos (
         id_producto, id_producto_logistica,edicion,fecha_circulacion,id_agente,cantidad_teorica,cantidad,precio,fecha_tope_devolucion,id_carga,
-        cantidad_suscripcion, id_clase_entrega,id_estado_pedido,enviado_concentrador,id_canilla,fecha_tope_repo, 
-        repo_notificada  
+        cantidad_suscripcion, id_clase_entrega,id_estado_pedido,enviado_concentrador,id_canilla, repo_notificada  
         )
     SELECT  
         null,pe.id_producto_logistica,pe.edicion,pe.fecha_circulacion,pa.id_medio_de_entrega,pa.cantidad_teorica, pa.cantidad_real,pa.precio_unidad,pa.fecha_tope_devolucion, 
-        pa.id_carga, pa.cantidad_suscripcion,pa.id_clase_entrega,NULL,NULL,NULL,NULL,NULL        
+        pa.id_carga, pa.cantidad_suscripcion,pa.id_clase_entrega,NULL,NULL,NULL,NULL        
     FROM 
         producto_circulados pc
         
@@ -125,18 +124,18 @@ rl.on('close', () => {
         pc.id_producto_logistica = pe.id_producto_logistica
         AND pc.edicion = pe.edicion
         AND pc.fecha_circulacion = pe.fecha_circulacion
-    )
+    );
 
 
     INSERT INTO pedidos (
         id_producto,id_producto_logistica,edicion, fecha_circulacion,id_agente,cantidad_teorica,cantidad,precio,fecha_tope_devolucion,id_carga,
-        cantidad_suscripcion, id_clase_entrega,id_estado_pedido,enviado_concentrador,id_canilla,fecha_tope_repo, 
+        cantidad_suscripcion, id_clase_entrega,id_estado_pedido,enviado_concentrador,id_canilla, 
         repo_notificada  
         )
     SELECT  
         null,pe.id_producto_logistica,pe.edicion, pe.fecha_circulacion,pa.id_medio_de_entrega,pa.cantidad_teorica, pa.cantidad_real,r.precio,pa.fecha_tope_devolucion, 
         pa.id_carga, pa.cantidad_suscripcion,pa.id_clase_entrega,r.id_estado_reposicion,r.enviado_concentrador,
-        r.id_canilla,r.fecha_tope_repo,r.repo_notificada        
+        r.id_canilla, r.repo_notificada        
 
     FROM producto_asignados  pa
     JOIN reposiciones r ON pa.id = r.id_producto_asignado_resultante and pa.id_clase_entrega = 'REP'
