@@ -13,6 +13,10 @@ productos, producto_tipo_productos, producto_familia_productos (APP_ProductosIma
 
 *Tablas que van a tener que ser eliminadas: producto_familia_productos, producto_circulados, devolcuion_productos_fuera_rediaf
 
+*Se descomenta campo "descripcion" de la tabla Producto para que sea incluida en el script final.
+
+*Se agregan campos "canal" y "habilitado_vta_en_firme" en el script final de la tabla producto_ediciones para que sean cargados con valores iniciales.
+
 ## **migratePedido**
 El archivo migratePedido, abarca las siguientes tablas:
 Reposicion, Producto_Asignado, Reposicion_EstadoReposicion  (SQL_SERVER)
