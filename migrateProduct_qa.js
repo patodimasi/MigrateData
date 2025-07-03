@@ -121,7 +121,7 @@ const strategies = {
             'updated_by',
             'updated_at',
             //'periodicidad',
-            'descripcion'
+            //'descripcion'
         ];
     
         // Filtrar columnas y valores
