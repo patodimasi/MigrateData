@@ -219,9 +219,9 @@ rl.on('close', () => {
     
   
     INSERT INTO producto_ediciones(id_producto,id_producto_logistica, fecha_circulacion, edicion, descripcion,
-         precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion,canal,habilitado_vta_en_firme)
+         precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion,canal,habilitado_vta_en_firme,stock)
     SELECT NULL, pd.id_producto_logistica, pd.fecha_circulacion, pd.edicion, pd.descripcion, pd.precio, 
-         pc.habilitado_reposicion,pd.texto_comercial,NULL,pi.url_externa,0,null,0
+         pc.habilitado_reposicion,pd.texto_comercial,NULL,pi.url_externa,0,null,false,1000
     FROM producto_descripciones pd       
     JOIN producto_circulados pc ON pd.id_producto_logistica = pc.id_producto_logistica and pc.edicion = pd.edicion and pd.fecha_circulacion = pc.fecha_circulacion
     JOIN productos_imagenes pi  ON pi.id_producto_logistica = pd.id_producto_logistica AND pi.edicion = pd.edicion;
