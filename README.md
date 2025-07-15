@@ -17,7 +17,7 @@ productos, producto_tipo_productos, producto_familia_productos (APP_ProductosIma
 
 *Se agregan campos "canal" y "habilitado_vta_en_firme" en el script final de la tabla producto_ediciones para que sean cargados con valores iniciales.
 
-*Se agrega campo stock a en la tabla producto_edicion y se le setea un valor predeterminado de 1000.
+*Se agrega campo Qty a en la tabla producto_edicion y se le setea un valor predeterminado de 1000.
 
 ## **migratePedido**
 El archivo migratePedido, abarca las siguientes tablas:
