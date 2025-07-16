@@ -65,26 +65,20 @@ const strategies = {
     },
 
     dateFilterInsert: (snakeTableName, snakeColumns, values, createdAtIndex) => {
-       // console.log("nombre tabla sankeTable", snakeColumns)
         const excludeColumns = ['created_by', 'created_at', 'updated_by', 'updated_at'];
-        const createdAtStr = values[createdAtIndex].replace(/'/g, '');
-        const createdAt = new Date(createdAtStr);
-        const fechaLimite = new Date('2024-01-01');
-    
-        if (createdAt > fechaLimite) {
-            // Filtrar las columnas excluidas
-            const filteredColumns = [];
-            const filteredValues = [];
-    
-            snakeColumns.forEach((col, index) => {
-                if (!excludeColumns.includes(col)) {
-                    filteredColumns.push(col);
-                    filteredValues.push(values[index]);
-                }
-            });
-    
-            strategies.insert(snakeTableName, filteredColumns, filteredValues);
-        }
+
+        const filteredColumns = [];
+        const filteredValues = [];
+        
+        snakeColumns.forEach((col, index) => {
+            if (!excludeColumns.includes(col)) {
+                filteredColumns.push(col);
+                filteredValues.push(values[index]);
+            }
+        });
+
+        strategies.insert(snakeTableName, filteredColumns, filteredValues);
+      
     },
 
     imageInsert: (snakeTableName, snakeColumns, values) => {
@@ -94,17 +88,7 @@ const strategies = {
   
     },
     productInsert: (snakeTableName, snakeColumns, values) => {
-        //console.log("nombre columnas",snakeColumns);
-        
-       /* if(snakeColumns == 'id_tipo_producto'){
-            console.log('pasa');
-            snakeColumns = 'tipo_producto_relacion'
-        }
-
-        if(snakeColumns == 'id_familia_producto'){
-            snakeColumns = 'familia_producto_relacion'
-        }
-            */
+   
         snakeColumns = snakeColumns.map(col => 
             col === 'id_tipo_producto' ? 'tipo_producto_relacion' :
             col === 'id_familia_producto' ? 'familia_producto_relacion' :
@@ -112,16 +96,10 @@ const strategies = {
         );
 
         const excludeColumns = [
-            //'id_producto_logistica',
-            //'id_familia_producto',
-            //'id_tipo_producto',
-            //'jerarquia_producto',
             'created_by',
             'created_at',
             'updated_by',
             'updated_at',
-            //'periodicidad',
-            //'descripcion'
         ];
     
         // Filtrar columnas y valores
@@ -210,16 +188,16 @@ rl.on('line', (line) => {
 rl.on('close', () => {
   
     const combinedStatement = `
-    SET SQL_SAFE_UPDATES = 0;
+   SET SQL_SAFE_UPDATES = 0;
 	
     UPDATE productos p
     JOIN devolucion_productos_fuera_rediafs d ON p.id_producto_sddra = d.id_producto_sddra
-    SET p.apto_dev_rediaf = 1
+    SET p.apto_devolucion_rediaf= 1
     WHERE p.id_producto_logistica IS NOT NULL;
     
   
     INSERT INTO producto_ediciones(id_producto,id_producto_logistica, fecha_circulacion, edicion, descripcion,
-         precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion,canal,habilitado_vta_en_firme,Qty)
+         precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion,canal,habilitado_vta_en_firme,qty)
     SELECT NULL, pd.id_producto_logistica, pd.fecha_circulacion, pd.edicion, pd.descripcion, pd.precio, 
          pc.habilitado_reposicion,pd.texto_comercial,NULL,pi.url_externa,0,null,false,1000
     FROM producto_descripciones pd       
@@ -232,7 +210,7 @@ rl.on('close', () => {
         from productos p
         join producto_tipo_productos ON p.tipo_producto_relacion = producto_tipo_productos.id;
 	
-    insert into producto_familia_productos_producto_links(producto_id,producto_familia_producto_id)
+    insert into productos_id_familia_productos_links(producto_id,producto_familia_producto_id)
         select p.id, producto_familia_productos.id
         from productos p
         join producto_familia_productos ON p.familia_producto_relacion = producto_familia_productos.id;
