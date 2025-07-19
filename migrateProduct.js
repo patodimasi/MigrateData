@@ -4,7 +4,7 @@ const readline = require('readline');
 
 /*
 Script para la entidad Producto tiene las tabla:
-Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Descripcion
+Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto
 Producto_Circulado, APP_ProductosImagenes, Devolucion_ProductosFueraRediaf,
 
 Devuelve las talas: Producto, Producto_tipoProducto, Producto_FamiliaProducto, Producto_Edicion
@@ -44,6 +44,17 @@ const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
 // Definición p.strategy
 const strategies = {
     insert: (snakeTableName, snakeColumns, values) => {
+        if(snakeTableName == 'producto_tipo_productos'){
+            const idIndex = snakeColumns.indexOf('id');
+            const grupoIndex = snakeColumns.indexOf('grupo_articulo');
+    
+            const grupoValue = values[grupoIndex];
+            
+            if (grupoValue.includes('FAS') || grupoValue.includes('CUP')) {
+                //console.log(`Fila filtrada por jerarquia_producto: ${jerarquiaValue}`);
+                return; // No continúa con el insert
+            }
+        }
         outputStream.write(`INSERT ${snakeTableName} (${snakeColumns}) VALUES (${values.join(', ')});\n`);
     },
 
@@ -63,8 +74,15 @@ const strategies = {
         // Generar y escribir la consulta con los datos filtrados
         outputStream.write(`INSERT ${snakeTableName} (${filteredColumns}) VALUES (${filteredValues.join(', ')});\n`);
     },
-
+    
     dateFilterInsert: (snakeTableName, snakeColumns, values, createdAtIndex) => {
+        if (snakeTableName === "producto_circulados") {
+            
+            const createdByIndex = snakeColumns.indexOf("created_by");
+            if (createdByIndex !== -1 && values[createdByIndex] === "'Insert Manual'") {
+                return; // No inserta
+            }
+        }
         const excludeColumns = ['created_by', 'created_at', 'updated_by', 'updated_at'];
 
         const filteredColumns = [];
@@ -89,6 +107,16 @@ const strategies = {
     },
     productInsert: (snakeTableName, snakeColumns, values) => {
    
+        const idIndex = snakeColumns.indexOf('id');
+        const jerarquiaIndex = snakeColumns.indexOf('jerarquia_producto');
+
+        const jerarquiaValue = values[jerarquiaIndex];
+        
+        if (jerarquiaValue.includes('FAS') || jerarquiaValue.includes('CUP')) {
+            //console.log(`Fila filtrada por jerarquia_producto: ${jerarquiaValue}`);
+            return; // No continúa con el insert
+        }
+
         snakeColumns = snakeColumns.map(col => 
             col === 'id_tipo_producto' ? 'tipo_producto_relacion' :
             col === 'id_familia_producto' ? 'familia_producto_relacion' :

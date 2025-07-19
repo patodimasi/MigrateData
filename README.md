@@ -1,6 +1,6 @@
 # Scripts para la migración de datos:  
 
-## **migrateProduct_qa**  
+## **migrateProduct**  
 El archivo migrateProduct, abarca las siguientes tablas: 
 Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Circulado,Devolucion_ProductosFueraRediaf
 APP_ProductosImagenes  (SQL_SERVER)
@@ -24,6 +24,8 @@ productos, producto_tipo_productos, producto_familia_productos (APP_ProductosIma
 
 *Se sacan del script el corte por fechas a un año para las talas producto_descripcion y producto_circulado
 
+* Se agrega el filtro que saca faciculos y cupones de producto y tipoproducto
+* se agrega el filtro que se saque de la tala producto_circulado aquellos campos cuyo created_by = Insert Manual 
 ## **migratePedido**
 El archivo migratePedido, abarca las siguientes tablas:
 Reposicion, Producto_Asignado, Reposicion_EstadoReposicion  (SQL_SERVER)
