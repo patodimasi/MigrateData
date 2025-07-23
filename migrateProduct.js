@@ -174,7 +174,9 @@ rl.on('line', (line) => {
         .replace(/^\s*GO\s*$/gm, '')
         .replace(/USE\s+\[(.*?)\]/g, 'USE $1;')
         .replace(/(\d+\.\d+)\s+AS Decimal\(\d+,\s*\d+\)\s*\)/g, '$1')
-        .replace(/(?<=[^' ])''(?=[^' ])/g, '');
+        .replace(/(?<=[^' ])''(?=[^' ])/g, '')
+        .replace(/https:\/\/sgdiwebapi\.lanacion\.com\.ar\/Imagenes\//g, 'https://dev-media-admin-circulacion.glanacion.com/media-folder/imagenes/');
+        
         
     const match = modifiedLine.match(/INSERT\s+(\w+)\s*\(([^)]+)\)\s+VALUES\s*\((.+)\)/);
     
@@ -224,14 +226,30 @@ rl.on('close', () => {
     WHERE p.id_producto_logistica IS NOT NULL;
     
   
-    INSERT INTO producto_ediciones(id_producto,id_producto_logistica, fecha_circulacion, edicion, descripcion,
+   	INSERT INTO producto_ediciones(id_producto,id_producto_logistica, fecha_circulacion, edicion, descripcion,
          precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion,canal,habilitado_vta_en_firme,qty)
     SELECT NULL, pd.id_producto_logistica, pd.fecha_circulacion, pd.edicion, pd.descripcion, pd.precio, 
-         pc.habilitado_reposicion,pd.texto_comercial,NULL,pi.url_externa,0,null,false,1000
+         pc.habilitado_reposicion,pd.texto_comercial,NULL,NULL,0,null,0,1000
     FROM producto_descripciones pd       
     JOIN producto_circulados pc ON pd.id_producto_logistica = pc.id_producto_logistica and pc.edicion = pd.edicion and pd.fecha_circulacion = pc.fecha_circulacion
-    JOIN productos_imagenes pi  ON pi.id_producto_logistica = pd.id_producto_logistica AND pi.edicion = pd.edicion;
-
+	
+	
+	INSERT INTO producto_ediciones(id_producto,id_producto_logistica, fecha_circulacion, edicion, descripcion,
+         precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion,canal,habilitado_vta_en_firme,qty)
+    SELECT NULL, pd.id_producto_logistica, pd.fecha_circulacion, pd.edicion, pd.descripcion, pd.precio, 
+         0,pd.texto_comercial,NULL,NULL,0,null,0,1000
+    FROM producto_descripciones pd       
+    where pd.fecha_circulacion > CURDATE()
+	AND EXISTS (
+    SELECT 1
+    FROM producto_descripciones AS pd_inner
+    WHERE pd_inner.id_producto_logistica = pd.id_producto_logistica
+      AND pd_inner.edicion = pd.edicion
+      AND pd_inner.fecha_circulacion > CURDATE()
+    GROUP BY pd_inner.id_producto_logistica, pd_inner.edicion
+    HAVING pd.Id = MAX(pd_inner.Id)
+  );
+	
    
     insert into productos_id_tipo_producto_links(producto_id,producto_tipo_producto_id)
         select p.id, producto_tipo_productos.id
