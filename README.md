@@ -38,11 +38,14 @@ hay id repetidos se queda con el mayor id
 la tabla producto_imagen para recien ahy correr el scrit migrateFiles.js
 Recordar tambien sacar el campo ubicacion_imagen no tiene que existir mas!!! se va a agregar un nuevo campo de tipo Media llamado imagen, que directamente se agrega a strapi a la entidad producto_edicion.
 
+*Se saco finalmente el campo uicacion imagen de la tabla productoEdicion, ahora es un campo media que tiene que ser agregado desde strapi
 ## **migrateFiles**
 Nuevo scrit que se agrego , recibe como entrada dos .json, uno es de la tala productos_imagenes y el otro es el de la tabla producto_edicion
 Este script lo que hace es cargas las tablas files y files_related_morphs
 La tabla file tiene los siguientes campos: id (PK),name (se va a formar como idProductoLogistica - Edicion), ext (.PNG),mime (image/png),url.
 La tabla files_related_morphs, tiene los campos: id (PK), file_id(PK de la tabla files), related_id (PK de la tabla producto_edicion), field: Imagen, Order: 1.
+
+Se cambio el nombre del campo field "Imagen" a "Uicacion Imagen".
 
 ## **migratePedido**
 El archivo migratePedido, abarca las siguientes tablas:

@@ -227,17 +227,17 @@ rl.on('close', () => {
     
   
    	INSERT INTO producto_ediciones(id_producto,id_producto_logistica, fecha_circulacion, edicion, descripcion,
-         precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion,canal,habilitado_vta_en_firme,qty)
+         precio, habilitado_reposicion,texto_comercial,periodicidad,recirculacion,canal,habilitado_vta_en_firme,qty)
     SELECT NULL, pd.id_producto_logistica, pd.fecha_circulacion, pd.edicion, pd.descripcion, pd.precio, 
-         pc.habilitado_reposicion,pd.texto_comercial,NULL,NULL,0,null,0,1000
+         pc.habilitado_reposicion,pd.texto_comercial,NULL,0,null,0,1000
     FROM producto_descripciones pd       
-    JOIN producto_circulados pc ON pd.id_producto_logistica = pc.id_producto_logistica and pc.edicion = pd.edicion and pd.fecha_circulacion = pc.fecha_circulacion
+    JOIN producto_circulados pc ON pd.id_producto_logistica = pc.id_producto_logistica and pc.edicion = pd.edicion and pd.fecha_circulacion = pc.fecha_circulacion;
 	
 	
 	INSERT INTO producto_ediciones(id_producto,id_producto_logistica, fecha_circulacion, edicion, descripcion,
-         precio, habilitado_reposicion,texto_comercial,periodicidad,ubicacion_imagen,recirculacion,canal,habilitado_vta_en_firme,qty)
+         precio, habilitado_reposicion,texto_comercial,periodicidad,recirculacion,canal,habilitado_vta_en_firme,qty)
     SELECT NULL, pd.id_producto_logistica, pd.fecha_circulacion, pd.edicion, pd.descripcion, pd.precio, 
-         0,pd.texto_comercial,NULL,NULL,0,null,0,1000
+         0,pd.texto_comercial,NULL,0,null,0,1000
     FROM producto_descripciones pd       
     where pd.fecha_circulacion > CURDATE()
 	AND EXISTS (

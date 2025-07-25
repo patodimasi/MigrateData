@@ -13,7 +13,6 @@ const outputPath = path.join(BASE_PATH, 'outputFileImagen.sql');
 //Va a empezar en 1
 let nextFileId = 1;
 
-
 async function processFilesAndGenerateSQL() {
    
     try {
@@ -56,7 +55,7 @@ async function processFilesAndGenerateSQL() {
                 outputStream.write(insertStatementFile);
 
                 // Sentencia INSERT para la tabla 'files_related_morphs'
-                const insertStatementFileMorphs = `INSERT INTO files_related_morphs (file_id, related_id, related_type, field, \`order\`) VALUES (${currentFileId}, ${related_id}, 'api::producto-edicion.producto-edicion', 'Imagen', 1);\n`;
+                const insertStatementFileMorphs = `INSERT INTO files_related_morphs (file_id, related_id, related_type, field, \`order\`) VALUES (${currentFileId}, ${related_id}, 'api::producto-edicion.producto-edicion', 'UbicacionImagen', 1);\n`;
                 outputStream.write(insertStatementFileMorphs);
             }
         }
