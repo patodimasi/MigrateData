@@ -58,7 +58,7 @@ const processFilesAndGenerateSQL = () => {
     const insertTipoLinks = `
         INSERT INTO productos_producto_tipo_links (producto_id, producto_tipo_id)
         SELECT p.id, ptipo.id
-        FROM producto_tipos tipo
+        FROM producto_tipos ptipo
         JOIN productos p ON p.tipo_producto_tmp = ptipo.codigo;
 
         insert into productos_producto_categoria_links (producto_id, producto_categoria_id)
