@@ -163,3 +163,6 @@ MediosDeEntrega y App_MediosDeEntregaExcluidos ambas pertenecientes a SQL SERVER
 * Tablas que se tienen que borrar: App_MediosDeEntregaExcluidos, la de MediosDeEntrega cambio el nombre por agentes por lo tanto no esta en mysql
 
 * Tablas que tienen que quedar en mysql, strapi: agentes
+
+## **migrateProduct**  (reestructuración)
+Se tiene que correr ahora el script que está dentro de la carpeta "reestructuracion".
