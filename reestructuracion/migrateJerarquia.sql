@@ -30,6 +30,7 @@ INSERT INTO producto_categorias(codigo, descripcion) VALUES ('SHT', 'One Shot');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('PLA', 'Opcionales Ed. Planeta');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('APE', 'REVISTA APERTURA CRONISTA');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('PRH', 'Pengüin Random House');
+INSERT INTO producto_categorias(codigo, descripcion) VALUES ('SUS', 'Susana');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('GEN', 'Generico');
 
 /* INSERCIONES SUBCATEGORIA PRODUCTO */
