@@ -16,7 +16,6 @@ INSERT INTO producto_categorias(codigo, descripcion) VALUES ('LNA', 'Familia La 
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('LUG', 'Familia Lugares');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('OHL', 'Familia Ohlalá');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('RST', 'Familia Rolling Stone');
-INSERT INTO producto_categorias(codigo, descripcion) VALUES ('SUS', 'Familia Susana');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('AMB', 'Familia Ámbito');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('CRO', 'Familia El Cronista');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('POP', 'Familia Popular');
@@ -28,9 +27,6 @@ INSERT INTO producto_categorias(codigo, descripcion) VALUES ('TAR', 'Familia Tie
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('TAP', 'Familia Tapas');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('PAG', 'Familia Pagina 12');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('LMD', 'Familia Le Monde');
-INSERT INTO producto_categorias(codigo, descripcion) VALUES ('SEM', 'Opcionales Semanales');
-INSERT INTO producto_categorias(codigo, descripcion) VALUES ('QUI', 'Opcionales Quincenales');
-INSERT INTO producto_categorias(codigo, descripcion) VALUES ('MEN', 'Opcionales Mensuales');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('SHT', 'One Shot');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('PLA', 'Opcionales Ed. Planeta');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('APE', 'REVISTA APERTURA CRONISTA');
