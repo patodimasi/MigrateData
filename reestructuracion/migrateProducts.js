@@ -11,6 +11,15 @@ WHERE m.id = (
     WHERE idMaterial = m.idMaterial and IdMaterial NOT LIKE 'SUS%'--and IdMaterial = 'OPC20010200005' 
 )
 FOR JSON PATH
+1) Primero corro el script migrateJerarquia.sql para poblar las tablas:
+producto_tipos,producto_categorias,producto_subcategorias,
+producto_categorias_producto_tipo_links, 
+producto_categorias_producto_subcategorias_links
+
+2) Segundo corro el script para poblar la tabla productos (Obtener O_WEB_Materiales)
+en ese mismo script se crea primero producto y despues las tablas pivot :
+productos_producto_tipo_links,productos_producto_categoria_links,productos_producto_subcategoria_links
+
 */
 const fs = require('fs');
 const path = require('path');
@@ -36,23 +45,38 @@ const processFilesAndGenerateSQL = () => {
       const SKU = item.IdMaterial;
       const Descripcion = escapeSQL(item.Descripcion);
       const Titulo = escapeSQL(item.DescripcionLogistica);
+      //const IdProductoLogistica = escapeSQL(item.IdMaterialLogistica);
+      //const Edicion = escapeSQL(item.Edicion);
 
       let TipoProducto = null;
       let Categoria = null;
       let Subcategoria = null;
 
       if (item.JerarquiaProducto) {
-        if (item.JerarquiaProducto.length >= 6) {
+        if (item.JerarquiaProducto.length === 6) {
+          //console.log(SKU);
           TipoProducto = item.JerarquiaProducto.substring(0, 3);
-          Categoria = item.JerarquiaProducto.substring(3, 6);
+          //console.log(TipoProducto);
+          let catTmp = item.JerarquiaProducto.substring(3, 6);
+          let Categoria = (catTmp === "QUI" || catTmp === "SEM" || catTmp === "MEN") ? "GEN" : catTmp;
+          //console.log(Categoria);
+          if (["QUI", "SEM", "MEN"].includes(catTmp)) {
+            Subcategoria = catTmp;  // Solo asigna si cumple la condición
+          }
+			    else{
+			      Subcategoria = item.JerarquiaProducto.substring(6, 9);
+			    }	
+          //console.log(Subcategoria)
+          return `INSERT INTO productos (sku, descripcion, titulo, tipo_producto_tmp, categoria_tmp, subcategoria_tmp) VALUES ('${SKU}', '${Descripcion}', '${Titulo}', '${TipoProducto}', '${Categoria}', '${Subcategoria}');`;
         }
         if (item.JerarquiaProducto.length === 9) {
+          TipoProducto = item.JerarquiaProducto.substring(0, 3);
+          Categoria = item.JerarquiaProducto.substring(3, 6);
           Subcategoria = item.JerarquiaProducto.substring(6, 9);
+          return `INSERT INTO productos (sku, descripcion, titulo, tipo_producto_tmp, categoria_tmp, subcategoria_tmp) VALUES ('${SKU}', '${Descripcion}', '${Titulo}', '${TipoProducto}', '${Categoria}', '${Subcategoria}');`;
         }
       }
      
-      return `INSERT INTO productos (sku, descripcion, titulo, tipo_producto_tmp, categoria_tmp, subcategoria_tmp) VALUES ('${SKU}', '${Descripcion}', '${Titulo}', '${TipoProducto}', '${Categoria}', ${Subcategoria ? `'${Subcategoria}'` : 'NULL'});`;
-    
     });
 
     const insertTipoLinks = `
@@ -84,7 +108,7 @@ const processFilesAndGenerateSQL = () => {
 
         UPDATE producto_subcategorias
         SET published_at = now();
-            `;
+        `;
     
         
     fs.writeFileSync(outputPath, inserts.join('\n') + '\n' + insertTipoLinks, { encoding: 'utf8' });
@@ -96,5 +120,3 @@ const processFilesAndGenerateSQL = () => {
 };
 
 processFilesAndGenerateSQL();
-
-
