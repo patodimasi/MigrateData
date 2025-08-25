@@ -1,44 +1,30 @@
 # Scripts para la migración de datos:  
 
 ## **migrateProduct**  
-El archivo migrateProduct, abarca las siguientes tablas: 
-Producto, Producto_FamiliaProducto, Producto_Descripcion, Producto_TipoProducto, Producto_Circulado,Devolucion_ProductosFueraRediaf
-APP_ProductosImagenes  (SQL_SERVER)
+1) Primero correr el script que se encuentra en la carpeta reestructuracion -> migrateJerarquia.sql , este script genera las siguientes tablas:
+producto_tipos
+producto_categorias
+producto_subcategorias
+producto_categorias_producto_tipo_links                -> Tabla pivot entre producto_tipo y producto_categorias
+producto_categorias_producto_subcategorias_links       -> Tabla pivoy entre producto_categorias y producto_subcategorias
+2) Generar el archivo O_WEB_Materiales.json (el cual va a ser la entrada del script reestructuracion-> migrateProducts.js)
+En sql server hay que correr la siguiente query:
+SELECT *
+FROM [Concentrador].[dbo].[O_WEB_Materiales] m
+WHERE m.id = (
+    SELECT MAX(id)
+    FROM [Concentrador].[dbo].[O_WEB_Materiales]
+    WHERE idMaterial = m.idMaterial 
+)
+ORDER BY m.CreadoFecha DESC;
+Este script genera un archivo .json guardarlo con el nombre (O_WEB_Materiales.json)
+3) Correr el script reestructuracion-> migrateProducts.js
+Ese script me va a generar el archivo de salida productos.sql, y las siguientes tablas pivot:
+productos_producto_tipo_links
+productos_producto_categoria_links
+productos_producto_subcategoria_links
 
-*Se crean las siguientes tablas:  
-Producto_Edicion : Viene de la union de las tablas Producto_Descripcion y Producto_Circulado y APP_ProductosImagenes
 
-*Tablas que tienen que quedar por el momento en Strapi y mysql:
-productos, producto_tipo_productos, producto_familia_productos (APP_ProductosImagenes),producto_circulados,devolucion_productos_fuera_rediaf
-
-*Tablas que van a tener que ser eliminadas: producto_descripcion, producto_circulados, devolcuion_productos_fuera_rediaf
-
-*Se comenta y luego se saca campo "descripcion" de la tabla Producto para que sea incluida en el script final -> Se vuelve a agregar finalmente el campo descripcion en la tala producto
-
-
-*Se agregan campos "canal" y "habilitado_vta_en_firme" en el script final de la tabla producto_ediciones para que sean cargados con valores iniciales.
-
-*Se agrega campo qty a en la tabla producto_edicion y se le setea un valor predeterminado de 1000.
-
-*Se camia el nomre del script migrateProductqa.js por migrateProduct.js.
-
-*Se sacan del script el corte por fechas a un año para las talas producto_descripcion y producto_circulado
-
-* Se agrega el filtro que saca faciculos y cupones de producto y tipoproducto
-* se agrega el filtro que se saque de la tala producto_circulado aquellos campos cuyo created_by = Insert Manual 
-
-* Se camibio la estrategia del script no se realia mas un join con la tabla producto_imagen , se agrega dos insert
-el primero es un join entre producto_circulado y productodescripcion.
-el segundo join se traen los registros de la tala producto_descripcion cuya fecha_circulacion sea mayor al dia actual, y si 
-hay id repetidos se queda con el mayor id
-
-* Se agrega un replace para cambiar la url de la tabla producto_imagen.
-
-*RECORDAR: primero migrar el script de migrateProducto, una vez que este eso, ir a la tabla de mysql , exportar la tabla producto_edicion y
-la tabla producto_imagen para recien ahy correr el scrit migrateFiles.js
-Recordar tambien sacar el campo ubicacion_imagen no tiene que existir mas!!! se va a agregar un nuevo campo de tipo Media llamado imagen, que directamente se agrega a strapi a la entidad producto_edicion.
-
-*Se saco finalmente el campo uicacion imagen de la tabla productoEdicion, ahora es un campo media que tiene que ser agregado desde strapi
 ## **migrateFiles**
 Nuevo scrit que se agrego , recibe como entrada dos .json, uno es de la tala productos_imagenes y el otro es el de la tabla producto_edicion
 Este script lo que hace es cargas las tablas files y files_related_morphs
