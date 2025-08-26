@@ -25,7 +25,6 @@ INSERT INTO producto_categorias(codigo, descripcion) VALUES ('ELP', 'Familia El 
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('TAR', 'Familia Tiempo Argentino');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('TAP', 'Familia Tapas');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('PAG', 'Familia Pagina 12');
-INSERT INTO producto_categorias(codigo, descripcion) VALUES ('LMD', 'Familia Le Monde');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('SHT', 'One Shot');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('PLA', 'Opcionales Ed. Planeta');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('APE', 'REVISTA APERTURA CRONISTA');
