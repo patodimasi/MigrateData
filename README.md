@@ -5,6 +5,10 @@
 producto_tipos
 producto_categorias
 producto_subcategorias
+
+*NOTA: Por las dudas antes de realizar los ultimos dos insert verificar que se cumple la relacion entre las tablas
+Ver archivo excel "JerarquiaProducto"
+
 producto_categorias_producto_tipo_links                -> Tabla pivot entre producto_tipo y producto_categorias
 producto_categorias_producto_subcategorias_links       -> Tabla pivoy entre producto_categorias y producto_subcategorias
 2) Generar el archivo O_WEB_Materiales.json (el cual va a ser la entrada del script reestructuracion-> migrateProducts.js)
