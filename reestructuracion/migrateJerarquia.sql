@@ -7,7 +7,6 @@ INSERT INTO producto_tipos(codigo, descripcion) VALUES ('OPC', 'Opcionales');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('BRA', 'Familia Brando');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('DJR', 'Familia Disney Junior');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('DPR', 'Familia Disney Princesas');
-INSERT INTO producto_categorias(codigo, descripcion) VALUES ('FAS', 'Familia Fascículos');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('HOL', 'Familia Hola');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('JAR', 'Familia Jardín');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('LIV', 'Familia Living');

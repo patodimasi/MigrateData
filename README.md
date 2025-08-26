@@ -24,7 +24,7 @@ productos_producto_tipo_links
 productos_producto_categoria_links
 productos_producto_subcategoria_links
 
-* se quito la familia LMD de la tala categoria
+* se quito la familia LMD,CCP,SCP,CUP,HER,FAS (Viene del tipo producto Faciculo) de la tala categoria
 
 ## **migrateFiles**
 Nuevo scrit que se agrego , recibe como entrada dos .json, uno es de la tala productos_imagenes y el otro es el de la tabla producto_edicion
