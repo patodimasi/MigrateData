@@ -1,8 +1,22 @@
+/* Configuraciones previas */
+USE `poc-strapi`;
+SET FOREIGN_KEY_CHECKS = 0;
+SET SQL_SAFE_UPDATES = 0;
+TRUNCATE TABLE productos;
+TRUNCATE TABLE producto_tipos;
+TRUNCATE TABLE producto_categorias;
+TRUNCATE TABLE producto_subcategorias;
+TRUNCATE TABLE producto_categorias_producto_tipo_links;
+TRUNCATE TABLE producto_categorias_producto_subcategorias_links;
+
+
+
 /* INSERCIONES TIPO PRODUCTO
     Tabla: producto_tipos */
 INSERT INTO producto_tipos(codigo, descripcion) VALUES ('DIA', 'Diarios');
 INSERT INTO producto_tipos(codigo, descripcion) VALUES ('RVT', 'Revistas');
 INSERT INTO producto_tipos(codigo, descripcion) VALUES ('OPC', 'Opcionales');
+UPDATE producto_tipos SET published_at = now();
 
 
 
@@ -22,6 +36,7 @@ INSERT INTO producto_categorias(codigo, descripcion) VALUES ('SHT', 'One Shot');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('PLA', 'Opcionales Ed. Planeta');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('PRH', 'Pengüin Random House');
 INSERT INTO producto_categorias(codigo, descripcion) VALUES ('GEN', 'Generico');
+UPDATE producto_categorias SET published_at = now();
 
 
 
@@ -42,6 +57,7 @@ INSERT INTO producto_subcategorias(codigo, descripcion) VALUES ('BOK', 'BOOKAZIN
 INSERT INTO producto_subcategorias(codigo, descripcion) VALUES ('CAL', 'CALENDARIO');
 INSERT INTO producto_subcategorias(codigo, descripcion) VALUES ('ESP', 'ESPECIAL');
 INSERT INTO producto_subcategorias(codigo, descripcion) VALUES ('LIB', 'LIBRO');
+UPDATE producto_subcategorias SET published_at = now();
 
 
 
@@ -151,3 +167,10 @@ INSERT INTO producto_categorias_producto_subcategorias_links(producto_categoria_
 INSERT INTO producto_categorias_producto_subcategorias_links(producto_categoria_id, producto_subcategoria_id) values (14,8);
 INSERT INTO producto_categorias_producto_subcategorias_links(producto_categoria_id, producto_subcategoria_id) values (14,9);
 INSERT INTO producto_categorias_producto_subcategorias_links(producto_categoria_id, producto_subcategoria_id) values (14,10);
+
+
+
+/* Configuraciones finales */
+USE `poc-strapi`;
+SET FOREIGN_KEY_CHECKS = 1;
+SET SQL_SAFE_UPDATES = 1;
