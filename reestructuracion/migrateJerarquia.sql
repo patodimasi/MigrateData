@@ -2,7 +2,6 @@
 USE `poc-strapi`;
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_SAFE_UPDATES = 0;
-TRUNCATE TABLE productos;
 TRUNCATE TABLE producto_tipos;
 TRUNCATE TABLE producto_categorias;
 TRUNCATE TABLE producto_subcategorias;
