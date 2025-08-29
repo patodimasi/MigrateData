@@ -20,7 +20,8 @@ WHERE m.id = (
 	  AND idMaterial NOT LIKE 'DJR%'
 	  AND idMaterial NOT LIKE 'DPR%'
 	  AND idMaterial NOT LIKE 'SUS%'
-	  AND idMaterial NOT LIKE 'APE%' 
+	  AND idMaterial NOT LIKE 'APE%'
+    AND idMaterial NOT LIKE 'LMD%'
 )
 FOR JSON PATH
 
