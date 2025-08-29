@@ -1,34 +1,44 @@
 # Scripts para la migración de datos:  
 
 ## **migrateProduct**  
-1) Primero correr el script que se encuentra en la carpeta reestructuracion -> migrateJerarquia.sql , este script genera las siguientes tablas:
-producto_tipos
-producto_categorias
-producto_subcategorias
+*Migrate Product
 
-*NOTA: Por las dudas antes de realizar los ultimos dos insert verificar que se cumple la relacion entre las tablas
-Ver archivo excel "JerarquiaProducto"
+Primero correr el script que se encuentra en la carpeta reestructuracion -> migrateJerarquia.sql , este script genera las siguientes tablas: producto_tipos, producto_categorias, producto_subcategorias
 
-producto_categorias_producto_tipo_links                -> Tabla pivot entre producto_tipo y producto_categorias
-producto_categorias_producto_subcategorias_links       -> Tabla pivoy entre producto_categorias y producto_subcategorias
-2) Generar el archivo O_WEB_Materiales.json (el cual va a ser la entrada del script reestructuracion-> migrateProducts.js)
-En sql server hay que correr la siguiente query:
+*NOTA: Por las dudas antes de realizar los ultimos dos insert verificar que se cumple la relacion entre las tablas Ver archivo excel "JerarquiaProducto"
+
+Este mismo archivo contiene los insert de las relaciones entre las tablas producto_tipo - producto_categorias   y    producto_categorias - producto_subcategorias
+
+Las tablas pivot son las siguientes:
+
+*producto_categorias_producto_tipo_links -> Tabla pivot entre producto_tipo y producto_categorias 
+*producto_categorias_producto_subcategorias_links -> Tabla pivot entre producto_categorias y producto_subcategorias 
+
+2) Generar el archivo O_WEB_Materiales.json (el cual va a ser la entrada del script reestructuracion-> migrateProducts.js 
+En sql server hay que correr la siguiente query: 
+
 SELECT *
 FROM [Concentrador].[dbo].[O_WEB_Materiales] m
 WHERE m.id = (
     SELECT MAX(id)
     FROM [Concentrador].[dbo].[O_WEB_Materiales]
-    WHERE idMaterial = m.idMaterial 
+      WHERE idMaterial = m.idMaterial
+   AND idMaterial NOT LIKE 'AMB%'
+   AND idMaterial NOT LIKE 'CRO%'
+      AND idMaterial NOT LIKE 'ELT%'
+      AND idMaterial NOT LIKE 'UNO%'
+   AND idMaterial NOT LIKE 'ELP%'
+   AND idMaterial NOT LIKE 'TAR%'
+   AND idMaterial NOT LIKE 'PAG%'
+   AND idMaterial NOT LIKE 'BRA%'
+   AND idMaterial NOT LIKE 'DJR%'
+   AND idMaterial NOT LIKE 'DPR%'
+   AND idMaterial NOT LIKE 'SUS%'
+   AND idMaterial NOT LIKE 'APE%' 
 )
-ORDER BY m.CreadoFecha DESC;
-Este script genera un archivo .json guardarlo con el nombre (O_WEB_Materiales.json)
-3) Correr el script reestructuracion-> migrateProducts.js
-Ese script me va a generar el archivo de salida productos.sql, y las siguientes tablas pivot:
-productos_producto_tipo_links
-productos_producto_categoria_links
-productos_producto_subcategoria_links
+FOR JSON PATH
 
-* se quito la familia LMD,CCP,SCP,CUP,HER,FAS (Viene del tipo producto Faciculo) de la tala categoria
+Guardar el resultado de esta query con el nombre  O_WEB_Materiales.json
 
 ## **migrateFiles**
 Nuevo scrit que se agrego , recibe como entrada dos .json, uno es de la tala productos_imagenes y el otro es el de la tabla producto_edicion

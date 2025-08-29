@@ -8,9 +8,24 @@ FROM [Concentrador].[dbo].[O_WEB_Materiales] m
 WHERE m.id = (
     SELECT MAX(id)
     FROM [Concentrador].[dbo].[O_WEB_Materiales]
-    WHERE idMaterial = m.idMaterial and IdMaterial NOT LIKE 'SUS%'--and IdMaterial = 'OPC20010200005' 
+      WHERE idMaterial = m.idMaterial
+	  AND idMaterial NOT LIKE 'AMB%'
+	  AND idMaterial NOT LIKE 'CRO%'
+      AND idMaterial NOT LIKE 'ELT%'
+      AND idMaterial NOT LIKE 'UNO%'
+	  AND idMaterial NOT LIKE 'ELP%'
+	  AND idMaterial NOT LIKE 'TAR%'
+	  AND idMaterial NOT LIKE 'PAG%'
+	  AND idMaterial NOT LIKE 'BRA%'
+	  AND idMaterial NOT LIKE 'DJR%'
+	  AND idMaterial NOT LIKE 'DPR%'
+	  AND idMaterial NOT LIKE 'SUS%'
+	  AND idMaterial NOT LIKE 'APE%' 
 )
 FOR JSON PATH
+
+*La query anterior me genera el archivo .json , O_WEB_Materiales.json, que sirve de entrada para el script migrayeProducts.js
+
 1) Primero corro el script migrateJerarquia.sql para poblar las tablas:
 producto_tipos,producto_categorias,producto_subcategorias,
 producto_categorias_producto_tipo_links, 
@@ -39,14 +54,15 @@ const processFilesAndGenerateSQL = () => {
 
     const productos = JSON.parse(rawData);
 
-    const escapeSQL = str => str ? str.replace(/'/g, "''") : ''; 
-
+    //const escapeSQL = str => str ? str.replace(/'/g, "''") : ''; 
+    const escapeSQL = str => (str !== null && str !== undefined) ? String(str).replace(/'/g, "''") : '';
+      
     const inserts = productos.map(item => {
       const SKU = item.IdMaterial;
-      const Descripcion = escapeSQL(item.Descripcion);
-      const Titulo = escapeSQL(item.DescripcionLogistica);
-      //const IdProductoLogistica = escapeSQL(item.IdMaterialLogistica);
-      //const Edicion = escapeSQL(item.Edicion);
+      const DescripcionLarga = escapeSQL(item.Descripcion);
+      const DescripcionCorta = escapeSQL(item.DescripcionLogistica);
+      const IdProductoLogistica = escapeSQL(item.IdMaterialLogistica);
+      const Edicion = escapeSQL(item.Edicion);
 
       let TipoProducto = null;
       let Categoria = null;
@@ -67,13 +83,14 @@ const processFilesAndGenerateSQL = () => {
 			      Subcategoria = item.JerarquiaProducto.substring(6, 9);
 			    }	
           //console.log(Subcategoria)
-          return `INSERT INTO productos (sku, descripcion, titulo, tipo_producto_tmp, categoria_tmp, subcategoria_tmp) VALUES ('${SKU}', '${Descripcion}', '${Titulo}', '${TipoProducto}', '${Categoria}', '${Subcategoria}');`;
+          return `INSERT INTO productos (sku, descripcion_larga, descripcion_corta, tipo_producto_tmp, categoria_tmp, subcategoria_tmp,id_producto_logistica_tmp,edicion_tmp) VALUES ('${SKU}', '${DescripcionLarga}', '${DescripcionCorta}', '${TipoProducto}', '${Categoria}', '${Subcategoria}','${IdProductoLogistica}','${Edicion}');`;
         }
         if (item.JerarquiaProducto.length === 9) {
           TipoProducto = item.JerarquiaProducto.substring(0, 3);
           Categoria = item.JerarquiaProducto.substring(3, 6);
           Subcategoria = item.JerarquiaProducto.substring(6, 9);
-          return `INSERT INTO productos (sku, descripcion, titulo, tipo_producto_tmp, categoria_tmp, subcategoria_tmp) VALUES ('${SKU}', '${Descripcion}', '${Titulo}', '${TipoProducto}', '${Categoria}', '${Subcategoria}');`;
+         // return `INSERT INTO productos (sku, descripcion, titulo, tipo_producto_tmp, categoria_tmp, subcategoria_tmp,,id_producto_logistica_tmp,edicion_tmp) VALUES ('${SKU}', '${Descripcion}', '${Titulo}', '${TipoProducto}', '${Categoria}', '${Subcategoria}');`;
+         return `INSERT INTO productos (sku, descripcion_larga, descripcion_corta, tipo_producto_tmp, categoria_tmp, subcategoria_tmp,id_producto_logistica_tmp,edicion_tmp) VALUES ('${SKU}', '${DescripcionLarga}', '${DescripcionCorta}', '${TipoProducto}', '${Categoria}', '${Subcategoria}','${IdProductoLogistica}','${Edicion}');`;
         }
       }
      
