@@ -42,12 +42,38 @@ FOR JSON PATH
 Guardar el resultado de esta query con el nombre  O_WEB_Materiales.json
 
 ## **migrateFiles**
-Nuevo scrit que se agrego , recibe como entrada dos .json, uno es de la tala productos_imagenes y el otro es el de la tabla producto_edicion
-Este script lo que hace es cargas las tablas files y files_related_morphs
-La tabla file tiene los siguientes campos: id (PK),name (se va a formar como idProductoLogistica - Edicion), ext (.PNG),mime (image/png),url.
-La tabla files_related_morphs, tiene los campos: id (PK), file_id(PK de la tabla files), related_id (PK de la tabla producto_edicion), field: Imagen, Order: 1.
+1) Primero crear el archivo producto_imagen.json -> viene de la tabla APP_ProductosImagenes,
 
-Se cambio el nombre del campo field "Imagen" a "Uicacion Imagen".
+Correr el siguiente script y guardar el archivo como producto_imagen.json
+SELECT * FROM [ln_sgdi].[dbo].[APP_ProductosImagenes] FOR JSON PATH
+
+2) Crear el segundo archivo producto.json -> viene de la tabla productos que se encuentra en mysql.
+
+2 bis) Por las duas chequear que las tablas donde se van a insertar los datos esten vacias la primera vez:
+
+truncate files;
+truncate files_related_morphs;
+
+3) Correr el script migrateFiles.json
+
+Recibe como entrada:
+
+filePath1 -> APP_ProductosImagenes -> Renombrar a producto_imagen.json
+filePath2 -> productos.json -> Renombrar a producto.json
+
+Este script va a poblar las tablas files y files_related_morphs
+
+En files se va a guardar los siguinetes campos:
+
+const ext = '.PNG';
+const mime = 'image/png';
+const url  = https://dev-media-admin-circulacion.glanacion.com/media-folder/imagenes/idproductoLogistica/Edicion'    -> Entorno dev ,
+const url  = https://qa-media-admin-circulacion.glanacion.com/media-folder/imagenes/idproductoLogistica/Edicion'    -> Entorno qa ,
+
+
+id = va a ser un id creado que va a empezar en "1", este id es la entrada a la siguiente tabla files_related_morphs (el id de la tabla files es el file_id de la tabla files_related_morphs)
+
+*NOTA: Primero problar la tabla productos de mysql, y luego poblar las tablas que hacen referencia a la imagen.
 
 ## **migratePedido**
 El archivo migratePedido, abarca las siguientes tablas:
@@ -166,5 +192,3 @@ MediosDeEntrega y App_MediosDeEntregaExcluidos ambas pertenecientes a SQL SERVER
 
 * Tablas que tienen que quedar en mysql, strapi: agentes
 
-## **migrateProduct**  (reestructuración)
-Se tiene que correr ahora el script que está dentro de la carpeta "reestructuracion".
