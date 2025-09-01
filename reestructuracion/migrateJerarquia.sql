@@ -170,6 +170,5 @@ INSERT INTO producto_categorias_producto_subcategorias_links(producto_categoria_
 
 
 /* Configuraciones finales */
-USE `poc-strapi`;
 SET FOREIGN_KEY_CHECKS = 1;
 SET SQL_SAFE_UPDATES = 1;
