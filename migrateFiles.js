@@ -58,6 +58,12 @@ async function processFilesAndGenerateSQL() {
         const productosImagen = JSON.parse(productosImagenData);
         const productos = JSON.parse(productosOwebMaterialesData);   
 
+        function convertirURL(URLExterna) {
+            //const baseNueva = "https://dev-media-admin-circulacion.glanacion.com/media-folder/imagenes/";
+            const baseNueva = "https://qa-media-admin-circulacion.glanacion.com/media-folder/imagenes/";
+            const path = URLExterna.split('/Imagenes/')[1];
+            return baseNueva + path;
+        }
         
         // Archivo de salida
         const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
@@ -79,7 +85,8 @@ async function processFilesAndGenerateSQL() {
                 const name = productoMatch.sku;//`${idLogisticaImagen}-${edicionImagen}`;
                 const ext = '.PNG';
                 const mime = 'image/png';
-                const url = 'https://dev-media-admin-circulacion.glanacion.com/media-folder/imagenes/' + productoMatch.id_producto_logistica_tmp + '/' + productoMatch.edicion_tmp + '.jpg';
+                const url = convertirURL(URLExterna);
+                //const url = 'https://dev-media-admin-circulacion.glanacion.com/media-folder/imagenes/' + productoMatch.id_producto_logistica_tmp + '/' + productoMatch.edicion_tmp + '.jpg';
                 //const url = 'https://qa-media-admin-circulacion.glanacion.com/media-folder/imagenes/' + productoMatch.id_producto_logistica_tmp + '/' + productoMatch.edicion_tmp + '.jpg';
                 // Aca generaria el autoincremental para file
                 const currentFileId = nextFileId++;
