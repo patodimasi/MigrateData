@@ -76,30 +76,31 @@ WHERE m.id = (
    AND idMaterial NOT LIKE 'LMD%'
 )
 FOR JSON PATH
+```
 
 Guardar el resultado de esta query con el nombre  O_WEB_Materiales.json (entrada para el cript migrateProduct.js)
 
-El resultado del script lo va a devolver en script_modifiedprod.sql, este script va a poblar las siguientes la tabla:
+El resultado del script (migrateProducts.js) va a ser poblar las siguientes tablas:
+
 ```
 productos
+productos_producto_tipo_links     -> Tabla pivot
+productos_producto_categoria_links -> Tabla pivot
+productos_producto_subcategoria_links -> Tabla pivot
 ```
-Y las siguientes tablas pivot:
-```
-productos_producto_tipo_links
-productos_producto_categoria_links
-productos_producto_subcategoria_links
-```
+
+
 ## **migrateFiles**
 Este script el resultado es poblar las tablas files y files_related_morphs
 
 1) Primero crear el archivo producto_imagen.json -> 
 viene de la tabla SQL: 
 ```
-APP_ProductosImagenes,
+APP_ProductosImagenes
 ```
 La query que se va a correr en sql es la siguiente:
 
-```
+```sql
 SELECT * FROM [ln_sgdi].[dbo].[APP_ProductosImagenes] 
 FOR JSON PATH
 ```
@@ -107,25 +108,28 @@ FOR JSON PATH
 2) Crear el segundo archivo producto.json -> viene de la tabla productos que se encuentra en mysql.
 
 2 bis) Por las duas chequear que las tablas donde se van a insertar los datos esten vacias la primera vez:
-
+```
 truncate files;
 truncate files_related_morphs;
+```
 
 3) Correr el script migrateFiles.json
 
 Recibe como entrada:
 
-filePath1 -> APP_ProductosImagenes -> archivo que se obtuvo en 1)
+filePath1 -> APP_ProductosImagenes -> archivo que se obtuvo en 1) 
 filePath2 -> productos.json -> archivo que se obtuvo en 2)
 
 Este script va a poblar las tablas files y files_related_morphs
 
 En files se va a guardar los siguinetes campos:
 
+```
 const ext = '.PNG';
 const mime = 'image/png';
 const url  = https://dev-media-admin-circulacion.glanacion.com/media-folder/imagenes/idproductoLogistica/Edicion'    -> Entorno dev 
 const url  = https://qa-media-admin-circulacion.glanacion.com/media-folder/imagenes/idproductoLogistica/Edicion'    -> Entorno qa 
+```
 
 
 id = va a ser un id creado que va a empezar en "1", este id es la entrada a la siguiente tabla files_related_morphs (el id de la tabla files es el file_id de la tabla files_related_morphs)
