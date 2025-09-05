@@ -1,22 +1,60 @@
 # Scripts para la migración de datos:  
 
+## Readme General 
+Primero poblar todo lo referente al producto
+1) Correr migrateJerarquia.sql -> Se encuentra dentro de la carpeta reestructuracion
+Se crean las tablas de :
+
+```
+producto_tipos;
+producto_categorias;
+producto_subcategorias;
+producto_categorias_producto_tipo_links;
+producto_categorias_producto_subcategorias_links;
+```
+
+2) Corer el script de migrateProduct.js
+Se crean las tablas de :
+```
+productos
+productos_producto_categoria_links
+productos_producto_subcategoria_links
+```
+3) Correr el script de migrateFiles
+
+Este script agrega las imagenes a los productos, se llenan las siguientes
+tablas:
+```
+files
+files_related_morphs
+```
+
+4) Correr el script referente a pedidos (migratePedido.js)
+## **migrateJerarquia**
+Este script que se encuentra en reestructuracion -> migrateJerarquia.sql
+
+Contiene todo lo referente a la catalogacion de un producto: TipoProducto, Categoria, Subcategoria.
+En este script se van a crear las siguientes tablas:
+```
+producto_tipos  -> (RVT,OPC,DIA)
+producto_categorias -> (Ejemplo: LIV, LUG)
+producto_subcategorias -> (Eemplo: ANU, SEM)
+```
+Y se van a crear la talas pivot a las relaciones antes mencionadas:
+```
+producto_categorias_producto_tipo_links
+producto_categorias_producto_subcategorias_links
+```
+
 ## **migrateProduct**  
 *Migrate Product
 
-Primero correr el script que se encuentra en la carpeta reestructuracion -> migrateJerarquia.sql , este script genera las siguientes tablas: producto_tipos, producto_categorias, producto_subcategorias
+Este script va a migrar los datos a la tala producto de strapi , los datos vienen de la tabla O_WEB_Materiales
 
-*NOTA: Por las dudas antes de realizar los ultimos dos insert verificar que se cumple la relacion entre las tablas Ver archivo excel "JerarquiaProducto"
+1) Generar el archivo O_WEB_Materiales.json (el cual va a ser la entrada del script reestructuracion-> migrateProducts.js 
 
-Este mismo archivo contiene los insert de las relaciones entre las tablas producto_tipo - producto_categorias   y    producto_categorias - producto_subcategorias
-
-Las tablas pivot son las siguientes:
-
-*producto_categorias_producto_tipo_links -> Tabla pivot entre producto_tipo y producto_categorias 
-*producto_categorias_producto_subcategorias_links -> Tabla pivot entre producto_categorias y producto_subcategorias 
-
-2) Generar el archivo O_WEB_Materiales.json (el cual va a ser la entrada del script reestructuracion-> migrateProducts.js 
 En sql server hay que correr la siguiente query: 
-
+```sql
 SELECT *
 FROM [Concentrador].[dbo].[O_WEB_Materiales] m
 WHERE m.id = (
@@ -39,13 +77,32 @@ WHERE m.id = (
 )
 FOR JSON PATH
 
-Guardar el resultado de esta query con el nombre  O_WEB_Materiales.json
+Guardar el resultado de esta query con el nombre  O_WEB_Materiales.json (entrada para el cript migrateProduct.js)
 
+El resultado del script lo va a devolver en script_modifiedprod.sql, este script va a poblar las siguientes la tabla:
+```
+productos
+```
+Y las siguientes tablas pivot:
+```
+productos_producto_tipo_links
+productos_producto_categoria_links
+productos_producto_subcategoria_links
+```
 ## **migrateFiles**
-1) Primero crear el archivo producto_imagen.json -> viene de la tabla APP_ProductosImagenes,
+Este script el resultado es poblar las tablas files y files_related_morphs
 
-Correr el siguiente script y guardar el archivo como producto_imagen.json
-SELECT * FROM [ln_sgdi].[dbo].[APP_ProductosImagenes] FOR JSON PATH
+1) Primero crear el archivo producto_imagen.json -> 
+viene de la tabla SQL: 
+```
+APP_ProductosImagenes,
+```
+La query que se va a correr en sql es la siguiente:
+
+```
+SELECT * FROM [ln_sgdi].[dbo].[APP_ProductosImagenes] 
+FOR JSON PATH
+```
 
 2) Crear el segundo archivo producto.json -> viene de la tabla productos que se encuentra en mysql.
 
@@ -58,8 +115,8 @@ truncate files_related_morphs;
 
 Recibe como entrada:
 
-filePath1 -> APP_ProductosImagenes -> Renombrar a producto_imagen.json
-filePath2 -> productos.json -> Renombrar a producto.json
+filePath1 -> APP_ProductosImagenes -> archivo que se obtuvo en 1)
+filePath2 -> productos.json -> archivo que se obtuvo en 2)
 
 Este script va a poblar las tablas files y files_related_morphs
 
@@ -67,8 +124,8 @@ En files se va a guardar los siguinetes campos:
 
 const ext = '.PNG';
 const mime = 'image/png';
-const url  = https://dev-media-admin-circulacion.glanacion.com/media-folder/imagenes/idproductoLogistica/Edicion'    -> Entorno dev ,
-const url  = https://qa-media-admin-circulacion.glanacion.com/media-folder/imagenes/idproductoLogistica/Edicion'    -> Entorno qa ,
+const url  = https://dev-media-admin-circulacion.glanacion.com/media-folder/imagenes/idproductoLogistica/Edicion'    -> Entorno dev 
+const url  = https://qa-media-admin-circulacion.glanacion.com/media-folder/imagenes/idproductoLogistica/Edicion'    -> Entorno qa 
 
 
 id = va a ser un id creado que va a empezar en "1", este id es la entrada a la siguiente tabla files_related_morphs (el id de la tabla files es el file_id de la tabla files_related_morphs)
@@ -76,29 +133,36 @@ id = va a ser un id creado que va a empezar en "1", este id es la entrada a la s
 *NOTA: Primero problar la tabla productos de mysql, y luego poblar las tablas que hacen referencia a la imagen.
 
 ## **migratePedido**
-El archivo migratePedido, abarca las siguientes tablas:
-Reposicion, Producto_Asignado, Reposicion_EstadoReposicion  (SQL_SERVER)
+El script de migratePedido va a poblar la tabla pedidos de strapi, con las siguientes tablas que viene de SQL:
+```
+Producto_Circulado
+Producto_Asignado
+Reposicion
+```
 
-*Se crean las siguientes talas en strapi:
-Pedido: Viene de la union de Producto_Asignado  (Para los pedidos QDES), Producto_Circulado,
-Producto_Edicion  (En el primer insert)
-Pedido: Viene de la union de Reposicion (Para los pedidos de Repo), Producto_Circulado, Producto_Edicion, Pedido_Estado (En el segundo insert)
-Pedido_Estado: se le cambio el nombre a la tala que venia de SQL Reposicion_EstadoReposicion
+Se van a poblar las siguientes tablas en strapi:
+```
+pedidos -> QUEDA
+temp_reposicions -> Se va a eliminar
+temp_producto_asignados -> Se va a eliminar
+temp_producto_circulados > Se va a eliminar
 
-*Tablas que tienen que quedar en strapi y mysql:
-Pedidos,Pedidos_Estados
+pedidos_sku_links -> tabla pivot entre pedido y producto
+pedidos_estado_links > tala pivot entre pedido y pedido_estados
 
-*Tablas que van a tener que ser eliminadas:
-Producto_Asignado, Reposicion, Producto_Circulado
+Se van a crear otros insert (a mano) a la tabla pivot pedidos_sku_link
+referente a los diarios
 
-*Se agrego el dia 05/06/2025 un campo mas a la tabla pedido_estado quedando de la siguiente forma:
+```
+NOTA: La tabla pedido_estado se va a poblar a mano, en principio solo va a tener los campos de estado de las reposiciones que son:
 
-id              descripcion
+```
+1 Pendiente
+2 Despachado
+3 Sin Stock
 
-1                  Pendiente  
-2                  Despachado 
-3                  Sin stock
-4                  Creado  
+```
+
 
 ## **migrateCanilla**
 Instrucciones con respecto al script para migrar datos relacionados a los Canillas.
