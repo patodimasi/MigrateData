@@ -105,7 +105,7 @@ SELECT * FROM [ln_sgdi].[dbo].[APP_ProductosImagenes]
 FOR JSON PATH
 ```
 
-2) Crear el segundo archivo producto.json -> viene de la tabla productos que se encuentra en mysql.
+2) Crear el segundo archivo producto.json -> viene de la tabla productos que se encuentra en mysql. (importarlo desde mysql como archivo .json)
 
 2 bis) Por las duas chequear que las tablas donde se van a insertar los datos esten vacias la primera vez:
 ```
