@@ -233,7 +233,7 @@ rl.on('close', () => {
     SET SQL_SAFE_UPDATES = 0;
 
     INSERT INTO pedidos (
-       fecha_circulacion, id_agente,precio, fecha_tope_devolucion, clase_entrega, id_canilla, recargo_interior_aplicado, 
+       fecha_circulacion, id_agente_temp,precio, fecha_tope_devolucion, clase_entrega, id_canilla, recargo_interior_aplicado, 
        descuento_comercial_aplicado, condicion_pago_aplicada, cantidad_solicitada, cantidad_despachada, id_pedido_sap, id_producto_logistica_tmp, edicion_tmp,
        estado_tmp
         )
@@ -251,7 +251,7 @@ rl.on('close', () => {
     
 	
 	INSERT INTO pedidos (
-        fecha_circulacion, id_agente,precio, fecha_tope_devolucion, clase_entrega, id_canilla, recargo_interior_aplicado, 
+        fecha_circulacion, id_agente_temp,precio, fecha_tope_devolucion, clase_entrega, id_canilla, recargo_interior_aplicado, 
         descuento_comercial_aplicado, condicion_pago_aplicada, cantidad_solicitada, cantidad_despachada, id_pedido_sap, id_producto_logistica_tmp, edicion_tmp,
         estado_tmp
         )
@@ -270,6 +270,11 @@ rl.on('close', () => {
     SELECT p.id, pro.id
     from pedidos p
     JOIN productos pro ON pro.id_producto_logistica_tmp = p.id_producto_logistica_tmp and pro.edicion_tmp = p.edicion_tmp;
+
+    INSERT INTO pedidos_agente_links(pedido_id,agente_id)
+    SELECT p.id, a.id
+    from pedidos p
+    JOIN agentes a ON a.id_agente = p.id_agente_temp;
 
     INSERT INTO pedidos_estado_links (pedido_id, pedido_estado_id)
 	SELECT p.id, pe.id

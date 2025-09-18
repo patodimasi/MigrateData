@@ -166,11 +166,15 @@ NOTA: La tabla pedido_estado se va a poblar a mano, en principio solo va a tener
 3 Sin Stock
 
 ```
+Tener en cuenta que se se crean a mano , correr luego la parte de migracion del script:
+pedidos_estado_links, ya que si no...no se va a poblar dicha tabla.
+
 ## **migrate Condicion de pago**
 
 Una ve que terminamo de crear y migrar la tabla de pedido, corremos el cript de migracion de Condiciones de pago
 Una vez que termina de correr el script, ver que la columna SKU, quedo vacia, ya que el campo anterior hacia referencia
 al idMaterial (tabla del concentrador C_Condiciones_de_Pago ) en esa tabla solo hay dos campos (actualmente) que tienen el id material : 200216, por lo tanto al momento que se llenen la tablas se va a agregar a mano dicho campo, en nuestra actual tabla ese idMaterial corresponderia al SKU: OPC20021600001
+
 
 ## **migrateCanilla**
 Instrucciones con respecto al script para migrar datos relacionados a los Canillas.
