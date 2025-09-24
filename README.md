@@ -13,7 +13,7 @@ producto_categorias_producto_tipo_links;
 producto_categorias_producto_subcategorias_links;
 ```
 
-2) Corer el script de migrateProduct.js
+2) Correr el script de migrateProduct.js
 Se crean las tablas de :
 ```
 productos
@@ -40,7 +40,7 @@ producto_tipos  -> (RVT,OPC,DIA)
 producto_categorias -> (Ejemplo: LIV, LUG)
 producto_subcategorias -> (Eemplo: ANU, SEM)
 ```
-Y se van a crear la talas pivot a las relaciones antes mencionadas:
+Y se van a crear la tablas pivot a las relaciones antes mencionadas:
 ```
 producto_categorias_producto_tipo_links
 producto_categorias_producto_subcategorias_links
@@ -49,7 +49,7 @@ producto_categorias_producto_subcategorias_links
 ## **migrateProduct**  
 *Migrate Product
 
-Este script va a migrar los datos a la tala producto de strapi , los datos vienen de la tabla O_WEB_Materiales
+Este script va a migrar los datos a la tabla producto de strapi , los datos vienen de la tabla O_WEB_Materiales
 
 1) Generar el archivo O_WEB_Materiales.json (el cual va a ser la entrada del script reestructuracion-> migrateProducts.js 
 
@@ -78,7 +78,7 @@ WHERE m.id = (
 FOR JSON PATH
 ```
 
-Guardar el resultado de esta query con el nombre  O_WEB_Materiales.json (entrada para el cript migrateProduct.js)
+Guardar el resultado de esta query con el nombre  O_WEB_Materiales.json (entrada para el script migrateProduct.js)
 
 El resultado del script (migrateProducts.js) va a ser poblar las siguientes tablas:
 
@@ -107,7 +107,7 @@ FOR JSON PATH
 
 2) Crear el segundo archivo producto.json -> viene de la tabla productos que se encuentra en mysql. (importarlo desde mysql como archivo .json)
 
-2 bis) Por las duas chequear que las tablas donde se van a insertar los datos esten vacias la primera vez:
+2 bis) Por las dudas chequear que las tablas donde se van a insertar los datos esten vacias la primera vez:
 ```
 truncate files;
 truncate files_related_morphs;
@@ -164,6 +164,7 @@ NOTA: La tabla pedido_estado se va a poblar a mano, en principio solo va a tener
 1 Pendiente
 2 Despachado
 3 Sin Stock
+4 Creado     -> (Estado nuevo)
 
 ```
 Tener en cuenta que se se crean a mano , correr luego la parte de migracion del script:
@@ -171,9 +172,8 @@ pedidos_estado_links, ya que si no...no se va a poblar dicha tabla.
 
 ## **migrate Condicion de pago**
 
-Una ve que terminamo de crear y migrar la tabla de pedido, corremos el cript de migracion de Condiciones de pago
-Una vez que termina de correr el script, ver que la columna SKU, quedo vacia, ya que el campo anterior hacia referencia
-al idMaterial (tabla del concentrador C_Condiciones_de_Pago ) en esa tabla solo hay dos campos (actualmente) que tienen el id material : 200216, por lo tanto al momento que se llenen la tablas se va a agregar a mano dicho campo, en nuestra actual tabla ese idMaterial corresponderia al SKU: OPC20021600001
+Una vez que terminamos de crear y migrar la tabla de pedido, corremos el cript de migracion de Condiciones de pago.
+Una vez que termina de correr el script, ver que la columna "SKU", quedo vacia, ya que el campo anterior hacia referencia al idMaterial, no a nuestro campo actual que es el SKU (tabla del concentrador C_Condiciones_de_Pago ) en esa tabla solo hay dos campos (actualmente) que tienen el id material : 200216, por lo tanto al momento que se llenen la tablas se va a agregar a mano dicho campo, en nuestra actual tabla ese idMaterial corresponderia al SKU: OPC20021600001 -> (idMaterial = 200216 , Edicion = 1)
 
 
 ## **migrateCanilla**
