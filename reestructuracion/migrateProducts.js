@@ -118,6 +118,12 @@ const processFilesAndGenerateSQL = () => {
         UPDATE productos
         SET published_at = now();
 
+        UPDATE productos
+        SET created_at = now();
+
+        UPDATE productos
+        SET updated_at = now();
+
         UPDATE producto_tipos
         SET published_at = now();
 
