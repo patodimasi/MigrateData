@@ -233,13 +233,13 @@ rl.on('close', () => {
     SET SQL_SAFE_UPDATES = 0;
 
     INSERT INTO pedidos (
-       fecha_circulacion, id_agente_temp,precio, fecha_tope_devolucion, clase_entrega, id_canilla, recargo_interior_aplicado, 
+       fecha_circulacion, id_agente_temp,precio, fecha_tope_devolucion, clase_entrega, recargo_interior_aplicado, 
        descuento_comercial_aplicado, condicion_pago_aplicada, cantidad_solicitada, cantidad_despachada, id_pedido_sap, id_producto_logistica_tmp, edicion_tmp,
-       estado_tmp
+       estado_tmp,id_canilla_temp
         )
     SELECT  
-        pc.fecha_circulacion, pa.id_medio_de_entrega, pa.precio_unidad, pa.fecha_tope_devolucion,'ASG', null, 
-        null, null, null, pa.cantidad_teorica, pa.cantidad_real, null, pc.id_producto_logistica, pc.edicion, null 
+        pc.fecha_circulacion, pa.id_medio_de_entrega, pa.precio_unidad, pa.fecha_tope_devolucion,'ASG', 
+        null, null, null, pa.cantidad_teorica, pa.cantidad_real, null, pc.id_producto_logistica, pc.edicion, null, null 
 		
     FROM 
         temp_producto_circulados pc
@@ -251,14 +251,14 @@ rl.on('close', () => {
     
 	
 	INSERT INTO pedidos (
-        fecha_circulacion, id_agente_temp,precio, fecha_tope_devolucion, clase_entrega, id_canilla, recargo_interior_aplicado, 
+        fecha_circulacion, id_agente_temp,precio, fecha_tope_devolucion, clase_entrega, recargo_interior_aplicado, 
         descuento_comercial_aplicado, condicion_pago_aplicada, cantidad_solicitada, cantidad_despachada, id_pedido_sap, id_producto_logistica_tmp, edicion_tmp,
-        estado_tmp
+        estado_tmp,id_canilla_temp
         )
 
     SELECT  
-       pc.fecha_circulacion, pa.id_medio_de_entrega, pa.precio_unidad, pa.fecha_tope_devolucion, 'VFIR', r.id_canilla, 
-       null, null, null, pa.cantidad_teorica, pa.cantidad_real, null,  pc.id_producto_logistica, pc.edicion, r.id_estado_reposicion
+       pc.fecha_circulacion, pa.id_medio_de_entrega, pa.precio_unidad, pa.fecha_tope_devolucion, 'VFIR', 
+       null, null, null, pa.cantidad_teorica, pa.cantidad_real, null,  pc.id_producto_logistica, pc.edicion, r.id_estado_reposicion, r.id_canilla
 
     FROM temp_producto_asignados  pa
     JOIN temp_reposicions r ON pa.id = r.id_producto_asignado_resultante and pa.id_clase_entrega = 'REP'
@@ -275,6 +275,11 @@ rl.on('close', () => {
     SELECT p.id, a.id
     from pedidos p
     JOIN agentes a ON a.id_agente = p.id_agente_temp;
+
+    INSERT INTO pedidos_canilla_links(pedido_id,canilla_id)
+    SELECT p.id,c.id
+    from pedidos p
+    JOIN canillas c ON c.id_canilla = p.id_canilla_temp;
 
     INSERT INTO pedidos_estado_links (pedido_id, pedido_estado_id)
 	SELECT p.id, pe.id
