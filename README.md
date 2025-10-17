@@ -19,6 +19,11 @@ Se crean las tablas de :
 productos
 productos_producto_categoria_links
 productos_producto_subcategoria_links
+
+Recordar de llenar los campos para la tabla producto_estado
+1- Deshailitado
+2- Hailitado
+3- Mostrar
 ```
 3) Correr el script de migrateFiles
 
@@ -30,6 +35,8 @@ files_related_morphs
 ```
 
 4) Correr el script referente a pedidos (migratePedido.js)
+
+
 ## **migrateJerarquia**
 Este script que se encuentra en reestructuracion -> migrateJerarquia.sql
 
@@ -45,6 +52,7 @@ Y se van a crear la tablas pivot a las relaciones antes mencionadas:
 producto_categorias_producto_tipo_links
 producto_categorias_producto_subcategorias_links
 ```
+
 
 ## **migrateProduct**  
 *Migrate Product
@@ -88,7 +96,6 @@ productos_producto_tipo_links     -> Tabla pivot
 productos_producto_categoria_links -> Tabla pivot
 productos_producto_subcategoria_links -> Tabla pivot
 ```
-
 
 ## **migrateFiles**
 Este script el resultado es poblar las tablas files y files_related_morphs
@@ -170,10 +177,21 @@ NOTA: La tabla pedido_estado se va a poblar a mano, en principio solo va a tener
 Tener en cuenta que se se crean a mano , correr luego la parte de migracion del script:
 pedidos_estado_links, ya que si no...no se va a poblar dicha tabla.
 
-## **migrate Condicion de pago**
+## **migrateCondiciondepago**
 
 Una vez que terminamos de crear y migrar la tabla de pedido, corremos el cript de migracion de Condiciones de pago.
-Una vez que termina de correr el script, ver que la columna "SKU", quedo vacia, ya que el campo anterior hacia referencia al idMaterial, no a nuestro campo actual que es el SKU (tabla del concentrador C_Condiciones_de_Pago ) en esa tabla solo hay dos campos (actualmente) que tienen el id material : 200216, por lo tanto al momento que se llenen la tablas se va a agregar a mano dicho campo, en nuestra actual tabla ese idMaterial corresponderia al SKU: OPC20021600001 -> (idMaterial = 200216 , Edicion = 1)
+La tabla de entrada del script "script_condicion_pago.sql" , proviene de la tabla del concentrador "C_Condiciones_de_Pago".
+Se van a migrar los siguientes campos:
+
+tipo_cliente    -> Viene directo de la tabla del concentrador
+tipo_producto_tmp -> Es un campo temporal, el cual se completa mediante la tabla (condicion_de_pagos_tipo_producto_links)
+categoria_tmp -> Es un campo temporal, el cual se completa mediante la tabla (condicion_de_pagos_categoria_links)
+subcategoria_tmp -> Es un campo temporal, el cual se completa mediante la tabla (condicion_de_pagos_subcategoria_links)
+agente_tmp -> Es un campo temporal, el cual se completa mediante la tabla (condicion_de_pagos_agente_links)
+condicion_pago -> Viene directo de la tabla del concentrador
+SKU_tmp -> Para este campo no se va a utilizar una tabla pivot, sino que se va a agregar a mano, ya que solamente existen dos entradas para este producto.
+Este campo en la tabla del concentrador viene como (idMaterial = 200216 , Edicion = 1) por eso se lo va a agregar a mano como SKU: OPC20021600001.
+Por eso no se va a hacer el update a la tabla pivot (condiciones_de_pagos_sku_links)
 
 
 ## **migrateCanilla**
