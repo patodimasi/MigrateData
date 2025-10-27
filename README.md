@@ -172,10 +172,11 @@ NOTA: La tabla pedido_estado se va a poblar a mano, en principio solo va a tener
 2 Despachado
 3 Sin Stock
 4 Creado     -> (Estado nuevo)
-
+5 Error      -> (Estado nuevo)
 ```
 Tener en cuenta que se se crean a mano , correr luego la parte de migracion del script:
 pedidos_estado_links, ya que si no...no se va a poblar dicha tabla.
+El estado igual 5 , se agrego principalmente por si queda en null: la condicion de pago, descuento comercial o recargo interior.
 
 ## **migrateCondiciondepago**
 
