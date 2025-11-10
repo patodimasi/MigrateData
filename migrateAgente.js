@@ -6,8 +6,8 @@ const readline = require('readline');
 Contiene las siguientes tablas: MediosDeEntrega y App_MediosDeEntregaExcluidos
 Devuelve nada mas Agentes*/
 
-const filePath = path.join('C:', 'Users', 'cwybranski', 'OneDrive - S.A. La Nacion', 'Documentos', 'scriptAgente.sql');
-const outputPath = path.join('C:', 'Users', 'cwybranski', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifiedagente.sql');
+const filePath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'scriptAgente.sql');
+const outputPath = path.join('C:', 'Users', 'pdimasi', 'OneDrive - S.A. La Nacion', 'Documentos', 'script_modifiedagente.sql');
 
 const rl = readline.createInterface({
     input: fs.createReadStream(filePath, { encoding: 'utf8' }),
@@ -23,7 +23,7 @@ const outputStream = fs.createWriteStream(outputPath, { encoding: 'utf8' });
 const agente_excluidos = (tabla, columna, valor) => {  
     const filteredColumns = [];
 
-    tabla = 'medios_de_entrega_excluidos'
+    tabla = 'temp_medios_de_entrega_excluidos'
     columna.forEach(col=>{
         filteredColumns.push(convertToSnakeCase(col));
     })
@@ -33,30 +33,41 @@ const agente_excluidos = (tabla, columna, valor) => {
 }
 
 const agente = (tabla, columna, valor) => {
-    // console.log("llega al destacado", tabla, columna, valor);
     const excludeColumns = ['TimeStamp'];
     const filteredColumns = [];
     const filteredValues = [];
 
-    tabla = 'agentes'
+    tabla = 'agentes';
+
+    let idAgenteValue = null;
+    let idAgentePadreValue = null;
+
     columna.forEach((col, index) => {
         if (col === 'IdMedioDeEntrega') {
-            col = 'id_agente'
-            idValue = valor[index];
+            col = 'id_agente';
+            idAgenteValue = valor[index];
         }
         if (col === 'IdMedioDeEntregaSap') {
-            col = 'id_agente_sap'
-            idValue = valor[index];
+            col = 'id_agente_sap';
         }
         if (col === 'IdMedioDeEntregaPadre') {
-            col = 'id_agente_padre'
-            idValue = valor[index];
+            col = 'id_agente_padre';
+            idAgentePadreValue = valor[index];
         }
+
         if (!excludeColumns.includes(col)) {
             filteredColumns.push(convertToSnakeCase(col));
             filteredValues.push(valor[index]);
         }
     });
+
+    // 👇 Ajuste: si son iguales, limpiar id_agente_padre en el INSERT
+    if (idAgenteValue == idAgentePadreValue) {
+        const idxPadre = filteredColumns.indexOf('id_agente_padre');
+        if (idxPadre !== -1) {
+            filteredValues[idxPadre] = "''";
+        }
+    }
 
     filteredColumns.push('agente_rediaf');
     filteredValues.push(0);
@@ -64,8 +75,11 @@ const agente = (tabla, columna, valor) => {
     filteredColumns.push('agente_excluido');
     filteredValues.push(0);
 
-    outputStream.write(`INSERT INTO ${convertToSnakeCase(tabla)} (${filteredColumns.join(', ')}) VALUES (${filteredValues.join(', ')});\n`);
-}
+    outputStream.write(
+        `INSERT INTO ${convertToSnakeCase(tabla)} (${filteredColumns.join(', ')}) VALUES (${filteredValues.join(', ')});\n`
+    );
+};
+
 
 rl.on('line', (line) => {
 
@@ -107,7 +121,7 @@ rl.on('close', () => {
 	
     UPDATE agentes a
     JOIN medios_de_entrega_excluidos me ON a.id_agente = me.id_medio_de_entrega
-    SET a.agente_excluido = 1
+    SET a.agente_excluido = 1;
 
     UPDATE app_medios_de_entrega_excluidos
     SET published_at = now();

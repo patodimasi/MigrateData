@@ -276,7 +276,7 @@ y es el orden que se le quiere dar a cada destacado por lo tanto:
 destacados: id, nombre, fecha_inicio, fecha_fin,activo, orden
 tabla que va a quedar en strapi: descatado (nada mas) , no hay que borrar ninguna tabla que venga de SQLServer
 
-## ** migrate Agente++
+## ** migrate Agente**
 
 El archivo migrateAgente abarca las siguientes tabblas:
 MediosDeEntrega y App_MediosDeEntregaExcluidos ambas pertenecientes a SQL SERVER
@@ -287,3 +287,4 @@ MediosDeEntrega y App_MediosDeEntregaExcluidos ambas pertenecientes a SQL SERVER
 
 * Tablas que tienen que quedar en mysql, strapi: agentes
 
+* Se agrego la siguiente validacion al script: Si  IdAgente = IdAgentePadre -> IdAgentePadre = ''
