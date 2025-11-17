@@ -116,6 +116,9 @@ const processFilesAndGenerateSQL = () => {
         SET SQL_SAFE_UPDATES = 0;
 
         UPDATE productos
+        SET stock_ilimitado = 0;
+
+        UPDATE productos
         SET published_at = now();
 
         UPDATE productos
