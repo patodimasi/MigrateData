@@ -288,3 +288,10 @@ MediosDeEntrega y App_MediosDeEntregaExcluidos ambas pertenecientes a SQL SERVER
 * Tablas que tienen que quedar en mysql, strapi: agentes
 
 * Se agrego la siguiente validacion al script: Si  IdAgente = IdAgentePadre -> IdAgentePadre = ''
+
+## ** migrate Modelo de Despacho**
+
+* Para migrar el modelo de despacho, primero hay que correr los siguientes script:
+1) migrateModeloDespacho , este script se saca de la vista de sql "vw_Adex_ModeloDespacho_Ruta_Agente"
+2) migrateRutas, este scrit se saca de la vista "vwAdexRutas"
+3) migrateTransportista, este script se saca de la tabla I_SAPProveedores, se va a migrar solo los que el campo IdProveedor comiencen con LO"
