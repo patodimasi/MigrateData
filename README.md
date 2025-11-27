@@ -291,7 +291,78 @@ MediosDeEntrega y App_MediosDeEntregaExcluidos ambas pertenecientes a SQL SERVER
 
 ## ** migrate Modelo de Despacho**
 
-* Para migrar el modelo de despacho, primero hay que correr los siguientes script:
-1) migrateModeloDespacho , este script se saca de la vista de sql "vw_Adex_ModeloDespacho_Ruta_Agente"
-2) migrateRutas, este scrit se saca de la vista "vwAdexRutas"
-3) migrateTransportista, este script se saca de la tabla I_SAPProveedores, se va a migrar solo los que el campo IdProveedor comiencen con LO"
+Las tablas pertenecientes a todo lo referente al modelo de despacho son: Modelo de despacho, Rutas despacho, Transportista y Ruta Tarifa.
+
+Orden en el cual hay que migrar estas tablas:
+1) Modelo de despacho
+2) Rutas despacho
+3) Transportista
+4) Temp_RutaMedio , es una tabla de SQL, que si bien es temporal hay que migrarla por que es la que relaciona el transportista con la ruta, la necesito
+para poder cargar la relacion actual entre la tabla Rutas despacho y transportista
+5) Ruta tarifa
+
+**Modelo de despacho (Contiene todos los modelos de despacho) , esta tabla viene de la tabla de SQL  "vw_Adex_ModeloDespacho_Ruta_Agente".
+El script que migra dicha tabla es: "migrateModeloDespacho"
+
+Tiene los siguientes campos:
+
+IdModeloDespacho
+
+Ruta                -> Relacion con la tabla Rutas despacho
+
+TipoDestino         -> En la vieja tabla de SQL se llama TipoTercero
+OrdenVisita
+
+Destino             -> En la vieja tabla de SQL se llama IdAgenteRuta
+
+RutaTmp             -> Campo temporal que se uso para relacionar la tabla Modelo de Despacho con la tabla Rutas Despacho, mediante la tabla ralacional "modelo_de_despachos_ruta_links"
+
+
+
+**Rutas despacho (Contiene todo lo referente a las rutas , su frecuencia y el transportista), esta tabla viene de la tabla SQL  vw_Adex_Rutas. Nombre del script que migra dicha tabla : "migrateRutas"
+
+Tiene los siguientes campos:
+
+CodigoRuta                                                 -> En la vieja tabla de SQL se llama IdRuta
+
+Descripcion
+
+Origen                                                     -> Nuevo 
+campo
+
+Destino                                                    -> Nuevo
+ campo
+
+EsTroncal                                                  -> En la
+ vieja tabla de SQL se llama EsPrimaria
+
+Frecuencia : Lun,Mar,Mier,Juev,Vier,Sab,Dom
+
+Transportista: Relacion con la tabla transportista         -> Viene de la tabla relacinal "rutas_despachos_transportista_links" , que relaciona las tablas Transportista con Temp_RutaMedio y
+                                                              RutaDespacho
+															  
+
+                                                              
+**Transportista (Contiene lo referente solo al transportista) , esta tabla viene de la tabla de SQL "I_SAP_Proveedores", solo hay que migrar aquellos proveedores que comienzan con "LO". Script que migra dicha tabla: "migrateTransportista"
+
+Tiene los siguientes campos:
+													  
+IdTransportista    -> Viene del campo IdProveedor 
+
+Descripcion
+
+
+
+Una vez que ya esten cargados los script para llenar las tablas de : Transportista y RutaDespacho , hay que correr el script "migrateRutaMedio", este crea una tabla temporal llamada
+"temp_ruta_medios", el cual vincula las rutas con los transportistas.
+
+**Ruta Tarifa  (Contiene lo referente al precio y peaje de una ruta vinculada a un transportista), esta tabla viene de la tabla SQL , [QDES].[qdesuser].[vw_tarifamedio].
+Tiene los siguientes campos:
+
+Transportista: Relacion con la tabla Transportista, tabla de relacion "ruta_tarifas_transportista_links"
+FechaDesde                                     -> En la vieja tabla de SQL se llama Fecha
+Tarifa
+Peaje
+Ruta: Relacion con la tabla Ruta despacho, tabla de relacion "ruta_tarifas_ruta_links"
+
+
