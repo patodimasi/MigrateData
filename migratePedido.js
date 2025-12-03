@@ -62,7 +62,7 @@ const handleProductoCirculado = (tableName, columns, values) => {
                 if (col === 'IdProductoCirculado') {
                     newCol = 'id';
                 } else if (col === 'CreatedAt') {
-                    newCol = 'creado'; // 👈 aquí renombramos
+                    newCol = 'creado';
                 } else {
                     newCol = convertToSnakeCase(col);
                 }
@@ -116,7 +116,7 @@ const handleProductoAsignado = (tableName, columns, values) => {
                 if (col === 'IdProductoAsignado') {
                     newCol = 'id';
                 } else if (col === 'CreatedAt') {
-                    newCol = 'creado'; // 👈 aquí renombramos
+                    newCol = 'creado';
                 } else {
                     newCol = convertToSnakeCase(col);
                 }
@@ -167,7 +167,7 @@ const handleReposicion = (tableName, columns, values) => {
         columns.forEach((col, index) => {
             
             if (!excludeColumns.includes(col)) {
-                // renombrar IdProductoAsignado -> id
+            
                 if (col === 'IdReposicion') {
                     newCol = 'id';
                 } else if (col === 'CreatedAt') {
