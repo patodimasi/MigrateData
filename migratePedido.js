@@ -171,7 +171,7 @@ const handleReposicion = (tableName, columns, values) => {
                 if (col === 'IdReposicion') {
                     newCol = 'id';
                 } else if (col === 'CreatedAt') {
-                    newCol = 'creado'; // 👈 aquí renombramos
+                    newCol = 'creado'; 
                 } else {
                     newCol = convertToSnakeCase(col);
                 }
